@@ -2,8 +2,8 @@
  * This file contains the plans that will be displayed in the billing page
  *
  */
-export const FREE_INDIVIDUAL_PLAN_ID = 'price_1PGGSpRqpbVy5HxZfhS3n3wA';
-export const FREE_TEAM_PLAN_ID = 'price_1PGGW1RqpbVy5HxZ0KyhxcgK';
+export const FREE_INDIVIDUAL_PLAN_ID = 'price_1PnPe8AT0DdFRzOPU92AjI5D';
+export const FREE_TEAM_PLAN_ID = 'price_1PnQOkAT0DdFRzOPRmF4uMSa';
 
 export const FREE_PLAN_USER = {
   slug: 'FREE_USER',
@@ -98,7 +98,7 @@ export const FREE_PLAN_TEAM = {
       name: '',
       description: '',
       price: '$0/month',
-      planId: 'price_1PGGW1RqpbVy5HxZ0KyhxcgK',
+      planId: 'price_1PnQOkAT0DdFRzOPRmF4uMSa',
       trial: '',
       storage: '600MB',
     },
@@ -126,7 +126,7 @@ export const TEAM_PRICING = [
         name: 'Monthly',
         description: 'The monthly premium plan',
         price: '$300/month',
-        planId: 'price_1PGGW1RqpbVy5HxZBkuDrOnb', // This is the id that will be used to identify the plan in the payment gateway
+        planId: 'price_1PnQPZAT0DdFRzOP6UjTkwBP', // This is the id that will be used to identify the plan in the payment gateway
         trial: '1 Day',
         storage: '100GB',
       },
@@ -152,7 +152,7 @@ export const TEAM_PRICING = [
         name: 'Monthly',
         description: 'The monthly premium plan',
         price: '$999/month',
-        planId: 'price_1PGGW1RqpbVy5HxZm5g7tfNw', // This is the id that will be used to identify the plan in the payment gateway
+        planId: 'price_1PnQQQAT0DdFRzOP9f0PnJl8', // This is the id that will be used to identify the plan in the payment gateway
         trial: '1 Day',
         storage: '500GB',
       },
