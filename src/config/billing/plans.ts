@@ -23,7 +23,7 @@ export const FREE_PLAN_USER = {
       name: '',
       description: '',
       price: '$0/month',
-      planId: 'price_1PGGSpRqpbVy5HxZfhS3n3wA',
+      planId: 'price_1PnPe8AT0DdFRzOPU92AjI5D',
       trial: '',
       storage: '300MB',
     },
@@ -51,7 +51,7 @@ export const USER_PRICING = [
         name: 'Monthly',
         description: 'The monthly premium plan',
         price: '$99/month',
-        planId: 'price_1PGGSpRqpbVy5HxZl3eJ3s4b', // This is the id that will be used to identify the plan in the payment gateway
+        planId: 'price_1PnPPJAT0DdFRzOPyClPrfjH', // This is the id that will be used to identify the plan in the payment gateway
         trial: '1 Day',
         storage: '1GB',
       },
@@ -77,7 +77,7 @@ export const USER_PRICING = [
         name: 'Monthly',
         description: 'The monthly exclusive plan',
         price: '$199/month',
-        planId: 'price_1PGGSpRqpbVy5HxZ670MLwX1', // This is the id that will be used to identify the plan in the payment gateway
+        planId: 'price_1PnPPqAT0DdFRzOPFmxSlqkc', // This is the id that will be used to identify the plan in the payment gateway
         trial: '1 Day',
         storage: '10GB',
       },
