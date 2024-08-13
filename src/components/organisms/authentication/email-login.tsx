@@ -41,7 +41,7 @@ export const EmailLogin = () => {
       return;
     }
 
-    //toast('Please check your email for a magic link.');
+    toast('Please check your email for a magic link.');
   };
 
   return (
