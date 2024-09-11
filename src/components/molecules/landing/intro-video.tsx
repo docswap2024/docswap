@@ -160,7 +160,7 @@ export function IntroVideo() {
             onClick={handlePlayPause}
             aria-label="Video Play Button"
             className={cn(
-              'bg-white w-full h-full shadow-lg group/actionIcon rounded-full border-2 flex items-center justify-center border-[#0B2F4F] duration-500 hover:bg-[#0B2F4F]',
+              'bg-white w-full h-full shadow-lg group/actionIcon rounded-full border-2 flex items-center justify-center s duration-500 hover:bg-[#0B2F4F]',
               playing && 'opacity-0 invisible'
             )}
           >

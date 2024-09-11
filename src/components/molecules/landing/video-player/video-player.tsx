@@ -77,20 +77,6 @@ export function IntroVideo({ videoUrl }: IntroVideoProps) {
 
   return (
     <Box className="w-full relative [@media(min-width:375px)]:w-[327px] [@media(min-width:500px)]:w-[400px] sm:w-[500px] md:!w-1/2 2xl:!w-[720px] 3xl:!w-[800px] md:mt-0 md:mb-0 mt-11 -mb-32 lg:p-4">
-      <Box className="w-full h-full absolute inset-0 overflow-hidden ">
-        <GradientBorder
-          radius={28}
-          gradient="linear-gradient(169deg, #228B99 3.25%, rgba(31, 147, 125, 0.00) 33.08%, rgba(29, 155, 99, 0.00) 61.48%, #19A540 97.93%)"
-          className="w-full h-full"
-        />
-      </Box>
-      <Box className="w-[calc(100%_-_16px)] h-[calc(100%_-_16px)] absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden ">
-        <GradientBorder
-          radius={24}
-          gradient="linear-gradient(169deg, #228B99 3.25%, rgba(31, 147, 125, 0.00) 33.08%, rgba(29, 155, 99, 0.00) 61.48%, #19A540 97.93%)"
-          className="w-full h-full"
-        />
-      </Box>
       <Box
         ref={videoPlayerWrapperRef}
         className="w-full flex rounded-[19px] lg:overflow-hidden z-10 group flex-col relative"

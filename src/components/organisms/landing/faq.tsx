@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { RiArrowRightSLine } from 'react-icons/ri';
 import { Accordion, Text, Title } from 'rizzui';
-
 import { PAGES } from '@/config/pages';
 import { cn } from '@/lib/utils/cn';
 import { useIsClient } from '@/hooks/useIsClient';
@@ -12,6 +11,7 @@ import { StaticPageFallbackIllustration } from '@/components/atoms/illustrations
 import { Box, Container, Flex, Grid, Section } from '@/components/atoms/layout';
 import { Fallback } from '@/components/molecules/Fallback';
 import { SectionHeader } from '@/components/molecules/landing/section-header';
+
 
 function FaqAccordion({
   title,
