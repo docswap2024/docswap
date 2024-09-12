@@ -128,7 +128,7 @@ export const formatTeamStorageCapacity = async () => {
       return calculateStorageCapacity;
     }
   } else {
-    const calculateStorageCapacity = 600 * MB;
+    const calculateStorageCapacity = 300 * MB;
     return calculateStorageCapacity;
   }
 };

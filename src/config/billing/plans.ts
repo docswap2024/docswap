@@ -49,7 +49,7 @@ export const USER_PRICING = [
     plans: [
       {
         name: 'Monthly',
-        description: 'The monthly premium plan',
+        description: 'The monthly professional plan',
         price: '$10/month',
         planId: 'price_1PxtJjAT0DdFRzOPxCq99UKm', // This is the id that will be used to identify the plan in the payment gateway
         trial: '1 Day',
@@ -88,11 +88,15 @@ export const USER_PRICING = [
 
 export const FREE_PLAN_TEAM = {
   slug: 'FREE_TEAM',
-  name: 'Free',
+  name: 'Trial',
   description: 'Free forever, with basic features.',
   features: {
-    included: ['600MB Storage', 'Basic Features', 'Email Support'],
-    notIncluded: ['Premium Features', '24/7 Chat Support', 'Unlimited Access'],
+    included: ['300MB Storage', 'Basic Features', 'Marketplace', 'Directory'],
+    notIncluded: [
+      'Unlimited Listings',
+      'Pro Features',
+      '24/7 Chat Support'
+    ],
   },
   plans: [
     {
@@ -101,7 +105,7 @@ export const FREE_PLAN_TEAM = {
       price: '$0/month',
       planId: 'price_1PnQOkAT0DdFRzOPRmF4uMSa',
       trial: '',
-      storage: '600MB',
+      storage: '300MB',
     },
   ],
 };
@@ -109,53 +113,55 @@ export const FREE_PLAN_TEAM = {
 export const TEAM_PRICING = [
   FREE_PLAN_TEAM,
   {
-    slug: 'BASIC_TEAM',
-    name: 'Basic',
-    description: 'For basic teams, with basic features.',
+    slug: 'REALTOR_TEAM',
+    name: 'Realtor',
+    description: 'For realtors team, with premium features.',
     features: {
       included: [
-        '100GB Storage',
+        '1GB Storage',
         'Basic Features',
-        'Email Support',
-        'Premium Features',
-        '24/7 Chat Support',
+        'Marketplace',
+        'Directory',
+        'Unlimited Listings',
+        'Pro Features',
       ],
-      notIncluded: ['Unlimited Access'],
+      notIncluded: ['24/7 Chat Support'],
     },
     plans: [
       {
         name: 'Monthly',
         description: 'The monthly premium plan',
-        price: '$300/month',
-        planId: 'price_1PnQPZAT0DdFRzOP6UjTkwBP', // This is the id that will be used to identify the plan in the payment gateway
+        price: '$15/month',
+        planId: 'price_1PyFlqAT0DdFRzOPYRJD8PUo', // This is the id that will be used to identify the plan in the payment gateway
         trial: '1 Day',
-        storage: '100GB',
+        storage: '1GB',
       },
     ],
   },
   {
-    slug: 'PREMIUM_TEAM',
-    name: 'Premium',
-    description: 'For premium teams, with premium features.',
+    slug: 'PROFESSIONAL_TEAM',
+    name: 'Professional',
+    description: 'For professional team, with exclusive features.',
     features: {
       included: [
-        '500GB Storage',
+        '3GB Storage',
         'Basic Features',
-        'Email Support',
-        'Premium Features',
-        '24/7 Chat Support',
-        'Unlimited Access',
+        'Marketplace',
+        'Directory',
+        'Unlimited Listings',
+        'Pro Features',
+        '24/7 Chat Support'
       ],
       notIncluded: [],
     },
     plans: [
       {
-        name: 'Monthly',
-        description: 'The monthly premium plan',
-        price: '$999/month',
-        planId: 'price_1PnQQQAT0DdFRzOP9f0PnJl8', // This is the id that will be used to identify the plan in the payment gateway
+        name: 'Yearly',
+        description: 'The yearly professional plan',
+        price: '$150/year',
+        planId: 'price_1PyFmnAT0DdFRzOPD6RJ64RX', // This is the id that will be used to identify the plan in the payment gateway
         trial: '1 Day',
-        storage: '500GB',
+        storage: '3GB',
       },
     ],
   },
