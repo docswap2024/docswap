@@ -1,4 +1,4 @@
-## [0.x.x] - 2024-xx-xx
+## [0.1.0] - 2024-09-12
 
 ### Added
 - Updated text and logos on the home page
