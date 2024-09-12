@@ -60,10 +60,14 @@ export const getCurrentTeamSubscription = async () => {
 
 export const formatUserStorageCapacity = async () => {
   const subscription = await getCurrentSubscription();
+  console.log(subscription);
   if (subscription) {
     const separateStorageSize = (sizeString: any) => {
       // Use regex to match the numeric part and the unit part
       const match = sizeString.match(/^(\d+)([A-Za-z]+)$/);
+
+      console.log(match);
+      console.log(sizeString);
 
       if (match) {
         // Extract the numeric value and unit
@@ -89,7 +93,7 @@ export const formatUserStorageCapacity = async () => {
       return calculateStorageCapacity;
     }
   } else {
-    const calculateStorageCapacity = 300 * MB;
+    const calculateStorageCapacity = 100 * MB;
     return calculateStorageCapacity;
   }
 };

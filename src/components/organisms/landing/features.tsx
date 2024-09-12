@@ -56,7 +56,7 @@ export default function Feature() {
         <SectionHeader
           title="Features"
           titleClassName="text-[#F8FAFC]"
-          description="Explore the powerful features of FileKit designed to enhance your file management efficiency and security."
+          description="Powerful features designed to enhance your business and increase productivity"
           descriptionClassName="text-[#CBD5E1]"
           className="mb-10 lg:mb-16"
         />

@@ -122,6 +122,7 @@ export const exportUsers = async (params: any) => {
 export const getCurrentSubscription = async () => {
   const user = await getCurrentUser();
   const planId = await BillingService.getActiveSubscription(user?.id as string);
+  console.log(planId);
   revalidateTag('user-subscription');
   return planId;
 };
