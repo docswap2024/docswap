@@ -30,28 +30,28 @@ export const navMenuItems = [
 
 export const trustedPartners = [
   {
-    title: 'Trello',
-    image: '/assets/trusted-partners/logo-1.webp',
+    title: 'eXp Realty',
+    image: '/assets/trusted-partners/eXp.jpg',
   },
   {
-    title: 'Bloomberg',
-    image: '/assets/trusted-partners/logo-2.webp',
+    title: 'REMAX',
+    image: '/assets/trusted-partners/REMAX.jpg',
   },
   {
-    title: 'Microsoft',
-    image: '/assets/trusted-partners/logo-3.webp',
+    title: 'Rennie',
+    image: '/assets/trusted-partners/rennie.jpg',
   },
   {
-    title: 'Slack',
-    image: '/assets/trusted-partners/logo-4.webp',
+    title: 'Royal Lepage',
+    image: '/assets/trusted-partners/royal-lepage.jpg',
   },
   {
-    title: 'Forbes',
-    image: '/assets/trusted-partners/logo-5.webp',
+    title: 'Macdonald',
+    image: '/assets/trusted-partners/Macdonald.jpg',
   },
   {
-    title: 'Adobe',
-    image: '/assets/trusted-partners/logo-6.webp',
+    title: 'Sutton',
+    image: '/assets/trusted-partners/Sutton.jpg',
   },
 ];
 
@@ -110,8 +110,8 @@ export const features = [
     image: '/assets/features/authentication.webp',
   },
   {
-    title: 'Editable Homepage',
-    description: 'Customize your homepage content with customizable options.',
+    title: 'Marketplace',
+    description: 'Swap or sell your marketing assets to recover marketing costs.',
     image: '/assets/features/editable-homepage.webp',
   },
   {
@@ -147,8 +147,8 @@ export const features = [
     image: '/assets/features/responsive.webp',
   },
   {
-    title: 'Custom Pages',
-    description: 'Design pages tailored to specific needs and requirements.',
+    title: 'Member Directory',
+    description: 'Network with real estate professionals, share referrals and promote your business',
     image: '/assets/features/custom-pages.webp',
   },
   {
