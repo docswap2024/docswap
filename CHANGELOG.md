@@ -2,4 +2,4 @@
 
 ### Added
 - Updated text and logos on the home page
-- Updated the subsctiption details
+- Updated the subscription details
