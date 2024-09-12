@@ -57,14 +57,13 @@ export default function Hero() {
                 as="h1"
                 className="text-white/90 text-[28px] mx-auto lg:mx-[unset] text-center md:text-left lg:text-3xl lg:leading-[1.3] xl:text-[46px] 3xl:text-[52px] 3xl:leading-[1.4] mb-2 lg:mb-5 font-bold max-w-[16ch]"
               >
-                Empower your workspace simplify your files with FileKit
+                Simple &amp; Secure File Sharing For Realtors
               </Title>
               <Text
                 as="p"
                 className="text-[#eee] text-sm mx-auto md:mx-[unset] text-center md:text-left leading-[1.5] lg:text-base 3xl:text-lg 3xl:leading-[32px] max-w-[28ch] lg:max-w-[32ch] xl:max-w-[40ch]"
               >
-                Streamline, secure, and share files effortlessly. Boost
-                collaboration and productivity in one intuitive platform.
+              Boost productivity and collaboration to improve your real estate business.
               </Text>
             </Box>
             <Flex
