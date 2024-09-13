@@ -10,9 +10,8 @@ export const FREE_PLAN_USER = {
   name: 'Trial',
   description: 'Free forever, with basic features.',
   features: {
-    included: ['100MB Storage', 'Basic Features', 'Marketplace', 'Directory'],
+    included: ['100MB Storage', 'Basic Features', 'Marketplace', 'Directory', 'One Listing'],
     notIncluded: [
-      'Unlimited Listings',
       'Pro Features',
       '24/7 Chat Support'
     ],
@@ -91,9 +90,8 @@ export const FREE_PLAN_TEAM = {
   name: 'Trial',
   description: 'Free forever, with basic features.',
   features: {
-    included: ['300MB Storage', 'Basic Features', 'Marketplace', 'Directory'],
+    included: ['300MB Storage', 'Basic Features', 'Marketplace', 'Directory', 'One Listing'],
     notIncluded: [
-      'Unlimited Listings',
       'Pro Features',
       '24/7 Chat Support'
     ],
@@ -114,8 +112,8 @@ export const TEAM_PRICING = [
   FREE_PLAN_TEAM,
   {
     slug: 'REALTOR_TEAM',
-    name: 'Realtor',
-    description: 'For realtors team, with premium features.',
+    name: 'Team',
+    description: 'For teams, with premium features.',
     features: {
       included: [
         '1GB Storage',
