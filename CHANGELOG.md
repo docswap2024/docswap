@@ -1,4 +1,4 @@
-## [0.x.x] - 20xx-xx-xx
+## [0.1.1] - 2024-09-25
 
 ### Added
 - Customized the text and logos
