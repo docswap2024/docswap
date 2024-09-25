@@ -11,7 +11,7 @@ export function LoginButton({
 }) {
   return (
     <Link
-      aria-label="Filekit Logo"
+      aria-label="DocSwap Logo"
       href={PAGES.AUTH.LOGIN}
       className={cn(
         'flex items-center text-base font-medium text-white duration-200 hover:text-white/80 gap-2',

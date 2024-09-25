@@ -29,7 +29,7 @@ export const Logo = ({
 }) => {
   return (
     <Link
-      aria-label="Filekit Logo"
+      aria-label="DocSwap Logo"
       href={href ?? PAGES.STATIC.LANDING}
       className={cn(
         'relative inline-flex max-h-full text-2xl font-semibold shrink-0 outline-none focus-visible:opacity-90',

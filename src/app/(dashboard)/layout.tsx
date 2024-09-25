@@ -15,7 +15,7 @@ import { Sidebar } from '@/components/organisms/sidebar';
 import { geist } from '@/app/font';
 
 export const metadata: Metadata = {
-  title: 'FileKit',
+  title: 'DocSwap',
   description: 'A starter kit for building SaaS products with Next.js',
 };
 

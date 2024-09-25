@@ -18,7 +18,7 @@ import { TBBgPattern } from '@/components/atoms/vectors/tb-bg-pattern';
 import { TruebeepNewsletter } from '@/components/organisms/landing/truebeep-newsletter';
 
 export const metadata: Metadata = {
-  title: 'FileKit',
+  title: 'DocSwap',
   description: 'A starter kit for building SaaS products with Next.js',
 };
 
