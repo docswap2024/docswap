@@ -13,7 +13,7 @@ import NextProgress from '@/components/atoms/next-progress';
 import { Providers } from '@/components/organisms/providers';
 
 export const metadata: Metadata = {
-  title: 'FileKit',
+  title: 'DocSwap',
   description: 'A starter kit for building SaaS products with Next.js',
 };
 

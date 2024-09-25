@@ -8,11 +8,11 @@ export const insertUserAndAssignRole = async (
   try {
    const [adminUser] = await db
     .select({id:users.id})
-    .from(users).where(eq(users.email,'seanbrawley@gmail.com'))
+    .from(users).where(eq(users.email,'sarahmakkar19@gmail.com'))
     if (!adminUser) {
       let userData = {
-        name: 'FileKit Admin',
-        email: 'seanbrawley@gmail.com',
+        name: 'DocSwap Admin',
+        email: 'sarahmakkar19@gmail.com',
         email_verified: true,
         status: UserStatus.Active,
       }
@@ -27,7 +27,7 @@ export const insertUserAndAssignRole = async (
       console.log('🚀 Creating......\n');
       console.log('✅ Admin Created\n');
       console.log(`🌱 Your Super Admin Email '${user.email}' !\n`);
-      console.log(`✅ Copy this email and login into FileKit dashboard !\n`);
+      console.log(`✅ Copy this email and login into DocSwap dashboard !\n`);
     } else {
       const userRoleData = {
         roleId: 1,

@@ -74,7 +74,7 @@ export default function Footer({
                   variant !== 'dashboard' && 'text-[#E5E7EB]'
                 )}
               >
-                REDQ
+                Docswap
               </Link>
               . All rights reserved.
             </Text>

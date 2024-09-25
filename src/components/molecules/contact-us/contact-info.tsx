@@ -22,7 +22,7 @@ export function ContactInfo({ className }: { className?: string }) {
             as="span"
             className="text-custom-black text-sm sm:text-base md:text-lg lg:text-xl font-semibold"
           >
-            Our Email
+            Email
           </Text>
         </Flex>
         <Box>
@@ -30,7 +30,7 @@ export function ContactInfo({ className }: { className?: string }) {
             href="mailto:Contact@gmail.com"
             className="inline-block text-[#475569] text-xs sm:text-sm md:text-base lg:text-lg"
           >
-            Contact@gmail.com
+            seanbrawley@gmail.com
           </a>
         </Box>
       </Flex>
@@ -41,14 +41,14 @@ export function ContactInfo({ className }: { className?: string }) {
             as="span"
             className="text-custom-black text-sm sm:text-base md:text-lg lg:text-xl font-semibold"
           >
-            Our Number
+            Number
           </Text>
         </Flex>
         <a
-          href="tel:+0123456789"
+          href="tel:+6048490500"
           className="inline-block whitespace-nowrap text-[#475569] text-xs sm:text-sm md:text-base lg:text-lg"
         >
-          (012)345-6789
+          604-849-0500
         </a>
       </Flex>
       <Flex className="py-3 md:py-4 lg:py-6 xl:py-8 gap-0 border-b border-[#CBD5E1] last-of-type:border-b-0">
@@ -58,14 +58,14 @@ export function ContactInfo({ className }: { className?: string }) {
             as="span"
             className="text-custom-black text-sm sm:text-base md:text-lg lg:text-xl font-semibold"
           >
-            Our Location
+            Location
           </Text>
         </Flex>
         <Text
           as="span"
           className="text-right whitespace-nowrap text-[#475569] leading-[1.7] text-xs sm:text-sm md:text-base lg:text-lg"
         >
-          Vancouver, WA 98665 <br /> United States
+          PO Box 101, Garibaldi, BC V0N 1T0
         </Text>
       </Flex>
     </Box>

@@ -38,6 +38,9 @@ const nextConfig = {
       {
         hostname:  `${env.NEXT_PUBLIC_CLOUDFLARE_URL.replace("https://", "")}`
       },
+      {
+        hostname: 'pub-09e89629ccf746aa9f157a82e10f7592.r2.dev',
+      }
     ],
   },
 };

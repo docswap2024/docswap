@@ -1,22 +1,35 @@
 import Image from 'next/image';
 import { Text, Title } from 'rizzui';
+import dynamic from 'next/dynamic';
 
 import { Box, Container, Flex } from '@/components/atoms/layout';
 import { TextEditor } from '@/components/atoms/text-editor';
 
 import { TermsContent } from '../organisms/terms-content';
+const BackgroundMap = dynamic(
+  () =>
+    import('@/components/templates/background-map').then(
+      (module) => module.BackgroundMap
+    ),
+  {
+    ssr: false,
+  }
+);
 
 export function ShowTerms({ terms }: { terms: string }) {
   return (
     <Box className="font-geist pb-8 md:pb-12 xl:pb-20">
       <header className="bg-[#141D25] pb-12 sm:pb-16 lg:pb-24 xl:aspect-[1920/840] font-geist relative w-full overflow-hidden">
-        <Image
+        {/* <Image
           src="/assets/green-globe-bg.webp"
           alt="green-globe-bg"
           width={1920}
           height={840}
           className="w-full h-full xl:aspect-[1920/840] object-cover 2xl:h-auto absolute top-0 left-0 pointer-events-none"
-        />
+        /> */}
+        <div className="absolute inset-0 z-0">
+          <BackgroundMap />
+        </div>
         <Container className="max-w-[120rem] px-4 md:px-8 lg:pt-16 3xl:px-40">
           <Flex
             direction="col"
@@ -26,7 +39,7 @@ export function ShowTerms({ terms }: { terms: string }) {
               Terms & Conditions
             </Title>
             <Text className="lg:text-base xl:text-lg">
-            Understanding Your Rights and Responsibilities as a FileKit User
+            Understanding Your Rights and Responsibilities When Using Docswap
             </Text>
           </Flex>
         </Container>
