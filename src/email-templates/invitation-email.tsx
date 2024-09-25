@@ -44,21 +44,21 @@ export default function InvitationEmail({
                   src={logo}
                   width="120"
                   height="30"
-                  alt="FileKit"
+                  alt="DocSwap"
                   className="object-contain mx-auto my-0"
                 />
               ) : (
-                <Heading className="m-0 text-2xl font-medium">FileKit</Heading>
+                <Heading className="m-0 text-2xl font-medium">DocSwap</Heading>
               )}
             </Section>
 
             <Section>
               <Heading className="my-8 text-xl font-medium text-center text-steel-700">
-                Join {team} on FileKit
+                Join {team} on DocSwap
               </Heading>
               <Text className="text-sm text-steel-600">Hello {userName},</Text>
               <Text className="text-sm leading-loose text-steel-600">
-                You are invited to join {team} on FileKit. To accept this
+                You are invited to join {team} on DocSwap. To accept this
                 invitation, please click the button below.
               </Text>
             </Section>
@@ -82,7 +82,7 @@ export default function InvitationEmail({
 
           <Container className="text-center">
             <Text className="text-sm text-steel-400">
-              © {format(new Date(), 'yyyy')} FileKit, All Rights Reserved
+              © {format(new Date(), 'yyyy')} DocSwap, All Rights Reserved
             </Text>
           </Container>
         </Body>

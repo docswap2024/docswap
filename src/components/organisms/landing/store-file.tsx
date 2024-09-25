@@ -25,8 +25,8 @@ function StoreFile() {
     >
       <Container className="md:px-8 px-4 mx-auto max-w-7xl lg:px-0">
         <SectionHeader
-          title="Store File on FileKit"
-          description="Safely store and access your files from anywhere with FileKit’s secure, cloud-based platform"
+          title="Store and share your Listing Documents"
+          description="Safely store, access and share your files from anywhere with Docswap’s secure, cloud based platform"
           className="mb-10 lg:mb-16"
         />
         <Grid className="[@media(min-width:500px)]:grid-cols-2 md:!grid-cols-3 gap-4 lg:gap-6 relative ">

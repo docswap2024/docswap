@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { pricing } from '@/data/landing-data';
 import { Text, Title } from 'rizzui';
@@ -12,19 +12,32 @@ import { Cross } from '@/components/atoms/icons/landing/cross';
 import { Tick } from '@/components/atoms/icons/landing/tick';
 import { Box, Container, Flex, Grid } from '@/components/atoms/layout';
 
+const BackgroundMap = dynamic(
+  () =>
+    import('@/components/templates/background-map').then(
+      (module) => module.BackgroundMap
+    ),
+  {
+    ssr: false,
+  }
+);
+
 export function ShowPricing() {
   const [pricingType, setPricingType] =
     useState<keyof typeof pricing>('individual');
   return (
     <div className="font-geist">
-      <header className="bg-[#141D25] pb-12 sm:pb-16 lg:pb-24 xl:pb-32 3xl:pb-0 font-geist relative w-full 3xl:aspect-[1920/520] 4xl:aspect-[1920/480] overflow-hidden">
-        <Image
+      <header className="relative bg-[#141D25] pb-12 sm:pb-16 lg:pb-24 xl:pb-32 3xl:pb-0 font-geist relative w-full h-full 3xl:aspect-[1920/520] 4xl:aspect-[1920/480] overflow-hidden">
+        {/* <Image
           src="/assets/green-globe-bg.webp"
           alt="green-globe-bg"
           width={1920}
           height={840}
           className="w-full h-full 3xl:aspect-[1920/840] object-cover 2xl:h-auto absolute top-0 left-0 pointer-events-none"
-        />
+        /> */}
+        <div className="absolute inset-0 z-0">
+          <BackgroundMap />
+        </div>
         <Container className="max-w-[120rem] px-4 md:px-8 lg:pt-16 3xl:px-40">
           <Flex
             direction="col"

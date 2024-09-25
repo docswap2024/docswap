@@ -27,7 +27,7 @@ export default function AuthenticationEmail(url: string) {
         <Body className="bg-white">
           <Container className="mx-auto w-[560px] px-8 pt-14 pb-12 mt-8 border border-solid rounded-lg bg-steel-50/30 border-steel-100">
             <Section className="text-center">
-              <Heading className="m-0 text-2xl font-medium">FileKit</Heading>
+              <Heading className="m-0 text-2xl font-medium">DocSwap</Heading>
             </Section>
 
             <Section>
@@ -36,7 +36,7 @@ export default function AuthenticationEmail(url: string) {
               </Heading>
               <Text className="text-sm text-steel-600">Hello there,</Text>
               <Text className="text-sm leading-loose text-steel-600">
-                Welcome to FileKit, To sign in, please click the button below.
+                Welcome to DocSwap, To sign in, please click the button below.
               </Text>
             </Section>
 
@@ -58,7 +58,7 @@ export default function AuthenticationEmail(url: string) {
 
           <Container className="text-center">
             <Text className="text-sm text-steel-400">
-              © {format(new Date(), 'yyyy')} FileKit, All Rights Reserved
+              © {format(new Date(), 'yyyy')} DocSwap, All Rights Reserved
             </Text>
           </Container>
         </Body>

@@ -70,8 +70,8 @@ function Testimonial() {
     >
       <Container className="md:px-8 px-4 mx-auto max-w-7xl lg:px-8">
         <SectionHeader
-          title="Testimonial"
-          description="Discover what our users say about us. Real feedback from those who trust FileKit daily."
+          title="Testimonials"
+          description="This is what users are saying about Docswap"
           className="mb-8 lg:mb-16"
         />
         {isSmallDevice ? (

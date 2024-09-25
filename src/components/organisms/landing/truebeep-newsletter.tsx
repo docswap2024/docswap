@@ -33,13 +33,13 @@ export function TruebeepNewsletter() {
           >
             Stay Up To Date with{' '}
             <span className="text-[#2C9F6F] [text-shadow:0_0_3px_rgba(44,159,111,.7)]">
-              FileKit&apos;s
+            DocSwap&apos;s
             </span>{' '}
             Latest Updates and Promotions
           </Title>
           <Text className="text-sm md:text-base lg:text-lg lg:max-w-[38ch] text-center text-[#CBD5E1] mb-10">
             Be the first to know about our latest updates, exclusive promotions,
-            and insider tips on FileKit!
+            and insider tips on DocSwap!
           </Text>
           <Flex className="justify-center">
             <Link
