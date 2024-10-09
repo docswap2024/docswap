@@ -1,10 +1,6 @@
 import * as dotenv from 'dotenv';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-
-import { permissionSeeder } from './seeds/permission';
-import { insertUserAndAssignRole } from './seeds/user-role';
-import { settingsSeeder } from './seeds/settings';
 import { addParcelSeeder } from './seeds/add-parcel';
 
 dotenv.config();
@@ -17,18 +13,11 @@ const main = async () => {
     connectionString: process.env.DATABASE_URL,
   });
   const db = drizzle(client);
-  console.log('🌱 SEEDING STARTED\n');
-
   try {
-    console.log('🚀 Inserting permissions\n');
-    await permissionSeeder(db);
-    await insertUserAndAssignRole(db);
-    await settingsSeeder(db);
+    await addParcelSeeder(db);
   } catch (error) {
-    console.log('❌ Seeding Failed');  
+    console.log('❌ Failed to add file');
   }
-
-  console.log('✅ SEEDING COMPLETED\n');
 };
 
 main().finally(() => process.exit(0));

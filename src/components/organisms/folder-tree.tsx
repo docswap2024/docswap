@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 import { ArrowLeft, ChevronRight, SearchIcon } from 'lucide-react';
 import { ActionIcon, Input, Text } from 'rizzui';
 
+import { PAGES } from '@/config/pages';
 import { generateBreadcrumbs } from '@/lib/utils/generateBreadcrumbs';
 
 import { EmptyFolderIcon } from '../atoms/icons/empty-folder';
@@ -71,6 +72,7 @@ export function FolderTree({
         <Box className="w-[calc(100%-52px)]">
           <Breadcrumbs
             breadcrumbs={breadcrumbs}
+            manager={PAGES.DASHBOARD.FILES}
             as="button"
             onClick={(item) => {
               setCurrentFolder(item);

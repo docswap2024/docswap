@@ -42,7 +42,7 @@ export const ShowFolders = async ({
       </Flex>
 
       <Box className="mb-7">
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
+        <Breadcrumbs breadcrumbs={breadcrumbs} manager={PAGES.DASHBOARD.FILES} />
       </Box>
 
     </Flex>

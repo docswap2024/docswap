@@ -16,6 +16,8 @@ export const PAGES = {
     FAVOURITES: '/dashboard/files/favourites',
     TRASH: '/dashboard/files/trash',
     FOLDERS: '/dashboard/folders',
+    SHOP: '/dashboard/ecommerce/shop',
+    SHOP_FOLDERS: '/dashboard/ecommerce/shop/folders',
   },
   ADMIN: {
     ROOT: '/admin',

@@ -3,6 +3,7 @@ import { FavouriteIcon } from '@/components/atoms/icons/dashboard/favourite';
 import { FilesIcon } from '@/components/atoms/icons/dashboard/files';
 import { SettingIcon } from '@/components/atoms/icons/dashboard/setting';
 import { TrashIcon } from '@/components/atoms/icons/dashboard/trash';
+import { ShopIcon } from '@/components/atoms/icons/dashboard/shop';
 
 import { PAGES } from './pages';
 import { TEAM_PAGES } from './teams';
@@ -41,6 +42,11 @@ const SidebarMenuItems: Menu[] = [
     name: 'Dashboard',
     href: PAGES.DASHBOARD.ROOT,
     icon: DashboardIcon,
+  },
+  {
+    name: 'Shop',
+    href: PAGES.DASHBOARD.SHOP,
+    icon: ShopIcon,
   },
   {
     name: 'Files',

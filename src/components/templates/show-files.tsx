@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import {
   type CompleteBreadcrumbs,
   type CompleteFile,
@@ -11,6 +11,7 @@ import { User } from 'lucia';
 import { RiArrowDownSLine, RiCheckLine, RiFilterLine } from 'react-icons/ri';
 import { ActionIcon, Button, Drawer, Dropdown, Select } from 'rizzui';
 
+import { PAGES } from '@/config/pages';
 import { FILE_SORT_OPTIONS, ORDER_OPTIONS } from '@/config/sort-options';
 import { cn } from '@/lib/utils/cn';
 import { getOptionByValue } from '@/lib/utils/getOptionByValue';
@@ -150,6 +151,12 @@ export const ShowFiles = ({
   useEffect(() => {
     setFilterVisibility(false);
   }, [is2xl]);
+
+  useEffect(() => {
+    console.log('files', files);
+    console.log('folders', folders);
+    console.log('totalFiles', totalFiles);
+  }, []);
 
   return (
     <Flex direction="col" align="stretch" className="gap-0">
@@ -411,7 +418,7 @@ export const ShowFiles = ({
 
       {breadcrumbs && (
         <Box className="mt-6">
-          <Breadcrumbs breadcrumbs={breadcrumbs} />
+          <Breadcrumbs breadcrumbs={breadcrumbs} manager={PAGES.DASHBOARD.FILES} />
         </Box>
       )}
 

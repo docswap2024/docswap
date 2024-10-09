@@ -63,10 +63,12 @@ function DropdownItems({
 
 export function BreadcrumbsDropDown({
   breadcrumbs,
+  manager,
   as = 'link',
   onClick,
 }: {
   breadcrumbs: CompleteBreadcrumbs[];
+  manager: string;
   as?: BreadcrumbsType;
   onClick?: (value?: any) => void;
 }) {
@@ -92,10 +94,15 @@ export function BreadcrumbsDropDown({
             as={as}
             {...(as === 'button'
               ? { onClick: onClick ? () => onClick(null) : undefined }
-              : { href: PAGES.DASHBOARD.FILES })}
+              : { href: manager})}
           >
             <HardDriveIcon className="shrink-0" strokeWidth={1.5} size={20} />
-            <span className="truncate">File Manager</span>
+           
+            <span className="truncate">
+            {
+                manager === PAGES.DASHBOARD.FILES ? 'File Manager' : 'Shop Manager'
+            }
+            </span>
           </DropdownItems>
 
           {breadcrumbs.slice(0, -3).map((item, index) => (
@@ -104,7 +111,9 @@ export function BreadcrumbsDropDown({
               as={as}
               {...(as === 'button'
                 ? { onClick: onClick ? () => onClick(item) : undefined }
-                : { href: PAGES.DASHBOARD.FOLDERS + '/' + item.id })}
+                :{
+                   href: manager === PAGES.DASHBOARD.FILES ? PAGES.DASHBOARD.FOLDERS + '/' + item.id : PAGES.DASHBOARD.SHOP_FOLDERS + '/' + item.id
+                })}
             >
               <FolderIcon className="shrink-0" strokeWidth={1.5} size={20} />
               <span className="truncate">{item.name}</span>

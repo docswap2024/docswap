@@ -15,6 +15,7 @@ export type BreadcrumbsType = 'link' | 'button';
 
 interface BreadcrumbsProps {
   breadcrumbs: CompleteBreadcrumbs[];
+  manager: string;
   as?: BreadcrumbsType;
   onClick?: (value?: any) => void;
   className?: string;
@@ -22,6 +23,7 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({
   breadcrumbs,
+  manager,
   as = 'link',
   onClick,
   className,
@@ -39,6 +41,7 @@ export function Breadcrumbs({
       {breadcrumbs?.length > 2 ? (
         <BreadcrumbsDropDown
           breadcrumbs={breadcrumbs}
+          manager={manager}
           onClick={onClick}
           as={as}
         />
@@ -47,9 +50,11 @@ export function Breadcrumbs({
           {as === 'link' ? (
             <Link
               className={breadcrumbsItemClassNames}
-              href={PAGES.DASHBOARD.FILES}
+              href={manager}
             >
-              File Manager
+              {
+                manager === PAGES.DASHBOARD.FILES ? 'File Manager' : 'Shop Manager'
+              }
             </Link>
           ) : (
             <button
@@ -83,7 +88,9 @@ export function Breadcrumbs({
           {as === 'link' ? (
             <Link
               className={breadcrumbsItemClassNames}
-              href={PAGES.DASHBOARD.FOLDERS + '/' + item.id}
+              href={
+                manager === PAGES.DASHBOARD.FILES ? PAGES.DASHBOARD.FOLDERS + '/' + item.id : PAGES.DASHBOARD.SHOP_FOLDERS + '/' + item.id
+              }
             >
               {item.name}
             </Link>

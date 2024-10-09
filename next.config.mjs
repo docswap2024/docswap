@@ -40,6 +40,12 @@ const nextConfig = {
       },
       {
         hostname: 'pub-09e89629ccf746aa9f157a82e10f7592.r2.dev',
+      },
+      {
+        hostname: 'pub-191ee85b3a3548119e77bc1e1d5d2a54.r2.dev',
+      }, 
+      {
+        hostname: 'maps.googleapis.com'
       }
     ],
   },

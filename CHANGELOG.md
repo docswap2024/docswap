@@ -1,3 +1,9 @@
+## [0.x.x] - 2024-xx-xx
+
+### Added
+- Added Ecommerce Shop Page 
+- Added Product Detail Page
+
 ## [0.1.1] - 2024-09-25
 
 ### Added
