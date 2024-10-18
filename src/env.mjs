@@ -32,7 +32,10 @@ export const env = createEnv({
 
     MAILCHIMP_API_KEY:z.string().min(1),
     MAILCHIMP_AUDIENCE_ID:z.string().min(1),
-    MAILCHIMP_API_SERVER:z.string().min(1),
+    MAILCHIMP_API_SERVER:z.string().min(1), 
+
+    API_GATEWAY_URL_PROD: z.string().min(1),
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().min(1)
 
   },
   /*
@@ -48,6 +51,8 @@ export const env = createEnv({
     NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1),
     NEXT_PUBLIC_CLOUDFLARE_URL: z.string().url(),
     NEXT_PUBLIC_SHOP_URL: z.string().url(),
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().min(1)
+    
   },
   /*
    * Due to how Next.js bundles environment variables on Edge and Client,
@@ -91,6 +96,9 @@ export const env = createEnv({
     MAILCHIMP_API_KEY:process.env.MAILCHIMP_API_KEY,
     MAILCHIMP_API_SERVER:process.env.MAILCHIMP_API_SERVER,
     MAILCHIMP_AUDIENCE_ID:process.env.MAILCHIMP_AUDIENCE_ID,
+
+    API_GATEWAY_URL_PROD: process.env.API_GATEWAY_URL_PROD,
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
     
   },
 });

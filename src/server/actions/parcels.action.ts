@@ -1,19 +1,19 @@
-import { FileSortType, SortOrderType } from '@/config/sorting';
+'use server';
+
+import { ShopSortType, SortOrderType } from '@/config/sorting';
 import { ParcelsService } from '../service/parcels.service';
 import { revalidateTag } from 'next/cache';
 import { notFound } from 'next/navigation';
-
+import { handleServerError } from '@/lib/utils/error';
 
 export async function getParcels(
     params: {
       size?: number;
       page?: number;
       search?: string;
-      sort?: FileSortType;
+      sort?: ShopSortType;
       order?: SortOrderType;
-      tag?: string;
       type?: string;
-      isFavourite?: boolean;
     },
     options?: {
       excludeByType?: string;
@@ -49,5 +49,22 @@ export const getAllFolders = async () => {
 };
 
 export async function getParcelById(id: string) {
-  return await ParcelsService.getParcelById(id);
+  const file = await ParcelsService.getParcelById(id);
+  return file;
 }
+
+export async function getParcelByFileName(fileName: string) {
+  return await ParcelsService.getParcelByFileName(fileName);
+}
+
+export const makeParcelFavourite = async (fileId: string, flag: boolean, userId: string) => {
+  try {
+    console.log(fileId, flag, userId);
+    const file = await ParcelsService.makeFavourite(fileId, flag, userId);
+    revalidateTag('get-parcels');
+    revalidateTag('get-all-parcels');
+    return file;
+  } catch (error) {
+    return handleServerError(error);
+  }
+};

@@ -1,32 +1,19 @@
-// import dynamic from 'next/dynamic';
-// import { routes } from '@/config/routes';
-// import { metaObject } from '@/config/site.config';
-// import PageHeader from '@/app/shared/page-header';
-// import FiltersButton from '@/app/shared/filters-button';
-// import ProductFeed from '@/app/shared/ecommerce/shop/product-feed';
-
-// const ShopFilters = dynamic(
-//   () => import('@/app/shared/ecommerce/shop/shop-filters'),
-//   {
-//     ssr: false,
-//   }
-// );
 import { cookies } from 'next/headers';
 import { FilesLayoutType } from '@/components/organisms/file-layout-switcher';
 import { EcommerceShop } from '@/components/templates/ecommerce-shop'; 
-import { FileSortType, SortOrderType } from '@/config/sorting';
+import { ShopSortType, SortOrderType } from '@/config/sorting';
 import { getParcels, getAllFolders} from '@/server/actions/parcels.action';
-
+import { getCurrentUser } from '@/lib/utils/session';
+import { getCart} from '@/server/actions/cart.action';
 
 type SearchParams = {
   search?: string;
   page?: number;
   size?: number;
-  sort?: FileSortType;
+  sort?: ShopSortType;
   order?: SortOrderType;
   type?: string;
 };
-
 
 // const pageHeader = {
 //   title: 'Shop',
@@ -53,17 +40,32 @@ export default async function Page({
 }: {
   searchParams: SearchParams;
 }) {
+  const defaultSort = 'streetName';
+  const defaultOrder = 'asc';
+
+  // Merge default values if not provided
+  const mergedParams: SearchParams = {
+    size: 50,
+    sort: searchParams.sort || defaultSort,
+    order: searchParams.order || defaultOrder,
+    ...searchParams,
+  };
+
+  const user = await getCurrentUser();
   const defaultLayout = cookies().get('files-layout')?.value ?? 'grid';
-  const { parcels, count } = await getParcels({ size: 50, ...searchParams });
+  const { parcels, count } = await getParcels({ size: 50, ...mergedParams });
   const folders = await getAllFolders();
+  const cart = await getCart(user?.id);
 
   return (
     <>
         <EcommerceShop 
          parcels={parcels}
+         user={user}
          totalParcels={count}
          defaultLayout={defaultLayout as FilesLayoutType} 
          folders={folders}
+         cart={cart || null}
         />
     </>
   );

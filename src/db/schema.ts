@@ -17,3 +17,4 @@ export * from './schema/tags-pivot';
 export * from './schema/roles';
 export * from './schema/user-roles';
 export * from './schema/ecommerce-parcels';
+export * from './schema/carts';

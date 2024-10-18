@@ -12,6 +12,11 @@ export type Parcel = typeof ecommerceParcels.$inferSelect;
 
 export type ParcelFolder = typeof ecommerceParcels.$inferSelect;
 
+export type CompleteParcel = typeof ecommerceParcels.$inferSelect & {
+  userName: string;
+};
+
+
 export interface CompleteParcelBreadcrumbs {
   id: string;
   name: string;
@@ -38,6 +43,8 @@ export const ecommerceParcels = pgTable('ecommerce_parcels', {
   postalCode: varchar('postal_code', { length: 255 }),
   country: varchar('country', { length: 255 }),
   pid: varchar('pid', { length: 255 }),
+  propertyType: varchar('property_type', { length: 255 }),
+  favouritedBy: varchar('favourited_by', { length: 255 }).array(),
   extension: varchar('extension', { length: 255 }),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),

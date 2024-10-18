@@ -1,12 +1,13 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/atoms/page-header';
 import { SearchBox } from '@/components/atoms/search-box';
 import { Box, Flex } from '@/components/atoms/layout';
 import { Separator } from '@/components/atoms/separator';
 import { DrawerHeader } from '@/components/molecules/drawer-header';
 import { PAGES } from '@/config/pages';
+import {User} from 'lucia';
 import {
     FileLayoutSwitcher,
     FilesLayoutType,
@@ -14,6 +15,8 @@ import {
 import {
     type CompleteBreadcrumbs,
     type Parcel,
+    type CompleteParcel,
+    type Cart
 } from '@/db/schema';
 import { Breadcrumbs } from '@/components/molecules/breadcrumbs/breadcrumbs';
 import { ShopFoldersFiles } from '@/components/organisms/shop-folders-files';
@@ -26,7 +29,7 @@ import { useFilesLayout } from '@/hooks/useFilesLayout';
 
 import { cn } from '@/lib/utils/cn';
 
-import { FILE_SORT_OPTIONS, ORDER_OPTIONS } from '@/config/sort-options';
+import { SHOP_SORT_OPTIONS, ORDER_OPTIONS } from '@/config/sort-options';
 
 import useQueryParams from '@/hooks/useQueryParam';
 
@@ -80,16 +83,20 @@ const fileType = [
 ];
 export const EcommerceShop = ({
     parcels,
+    user,
     totalParcels,
     defaultLayout,
     folders,
     breadcrumbs,
+    cart
 }: {
-    parcels: Parcel[];
+    parcels: CompleteParcel[];
+    user: User;
     totalParcels: number;
     defaultLayout?: 'grid' | 'list';
     folders: Parcel[]; 
     breadcrumbs?: CompleteBreadcrumbs[];
+    cart: Cart | null;
 }) => {
     const [filterDrawerState, setFilterDrawerState] = useState(false);
     const [filterVisibility, setFilterVisibility] = useState<boolean>(false);
@@ -106,15 +113,15 @@ export const EcommerceShop = ({
 
     const currentOrder = queryParams.order
     ? ORDER_OPTIONS.find((order) => order.value === queryParams.order)
-    : ORDER_OPTIONS[1];
+    : ORDER_OPTIONS[0];
 
     const currentType = queryParams.type
     ? fileType.find((type) => type.value === queryParams.type)
     : null;
 
     const currentSort = queryParams.sort
-    ? FILE_SORT_OPTIONS.find((sort) => sort.value === queryParams.sort)
-    : FILE_SORT_OPTIONS[2];
+    ? SHOP_SORT_OPTIONS.find((sort) => sort.value === queryParams.sort)
+    : SHOP_SORT_OPTIONS[1];
 
     useEffect(() => {
         setFilterVisibility(false);
@@ -224,7 +231,7 @@ export const EcommerceShop = ({
                                     </Button>
                                 </Dropdown.Trigger>
                                 <Dropdown.Menu className="dark:bg-steel-700">
-                                    {FILE_SORT_OPTIONS.map((sort) => (
+                                    {SHOP_SORT_OPTIONS.map((sort) => (
                                     <Dropdown.Item
                                         key={sort.value}
                                         onClick={() => {
@@ -318,9 +325,11 @@ export const EcommerceShop = ({
             <Box className="mt-12">
                 <ShopFoldersFiles
                 files={parcels}
+                user={user}
                 totalFiles={totalParcels}
                 layout={LAYOUT}
                 folders={folders}
+                cart={cart}
                 />
             </Box>
             <Drawer
@@ -375,7 +384,7 @@ export const EcommerceShop = ({
                         </Button>
                     </Dropdown.Trigger>
                     <Dropdown.Menu className="dark:bg-steel-700">
-                        {FILE_SORT_OPTIONS.map((sort) => (
+                        {SHOP_SORT_OPTIONS.map((sort) => (
                         <Dropdown.Item
                             key={sort.value}
                             onClick={() => {

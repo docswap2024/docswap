@@ -1,6 +1,6 @@
 "use client";
 
-import { Parcel } from '@/db/schema';
+import { CompleteParcel, Cart } from '@/db/schema';
 import { User } from 'lucia';
 import { useEffect, useState } from 'react';
 import { getR2FileLink } from '@/lib/utils/parcel';
@@ -8,7 +8,7 @@ import Image from '@/components/atoms/next/image';
 import { Box, Flex } from '@/components/atoms/layout';
 import { cn } from '@/lib/utils/cn';
 import { Button, Text, ActionIcon, Collapse} from 'rizzui';
-import { PiShoppingCartSimple, PiCaretDownBold } from 'react-icons/pi';
+import { TbShoppingCartX, TbShoppingCart } from "react-icons/tb";
 import { useRouter } from 'next-nprogress-bar';
 import { LastSold } from '@/components/molecules/ecommerce-sub-details/last-sold';
 import { Taxes } from '../molecules/ecommerce-sub-details/taxes';
@@ -18,17 +18,20 @@ import {
 import axios from 'axios';
 import { BCAssessment } from '../molecules/ecommerce-sub-details/bc-assessment';
 import { numberWithCommas, checkIfEmpty } from '@/lib/utils/format';
+import { handleFavourite } from '@/lib/utils/favourite';
+import { modifyCart } from '@/lib/utils/cart';
 
-export function EcommerceDetails({
+export function EcommerceFileDetails({
     file,
     user,
+    cart
 }: {
-    file: Parcel;
+    file: CompleteParcel;
     user: User;
+    cart: Cart | null;
 }) {
     const [cardImage, setCardImage] = useState<string>('');
     const [propertyInfo, setPropertyInfo] = useState<any>(null);
-    const [isLiked, setIsLiked] = useState(false);
     const router = useRouter();
 
     
@@ -64,10 +67,6 @@ export function EcommerceDetails({
         getCardR2Link();
     }, []);
 
-    const toggleLike = () => {
-        setIsLiked(!isLiked); // Toggle the liked state
-    }
-
    return (
       <Box>
         <Box className="flex justify-start p-4">
@@ -86,7 +85,7 @@ export function EcommerceDetails({
         propertyInfo &&
             <Box className="flex flex-col sm:flex-row">
                 {/* Left Image Section */}
-                <Box className='grid grid-cols-2 gap-2 border-2'>
+                <Box className='grid grid-cols-2 gap-2'>
                     {/* First image spanning 2 rows and 1 column */}
                     <Box className="col-span-2">
                         {cardImage && (
@@ -108,7 +107,7 @@ export function EcommerceDetails({
                         width={200}
                         height={200}
                         priority
-                        src={`https://maps.googleapis.com/maps/api/streetview?size=200x200&location=${propertyInfo.Latitude.Value},${propertyInfo.Longitude.Value}&fov=80&pitch=0&key=AIzaSyCj9uSdVdZcQtAHRw44oGJjLiti4z7IKOU`}
+                        src={`https://maps.googleapis.com/maps/api/streetview?size=200x200&location=${propertyInfo.Latitude.Value},${propertyInfo.Longitude.Value}&fov=80&pitch=0&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
                         alt=""
                         />
                     </Box>
@@ -120,7 +119,7 @@ export function EcommerceDetails({
                         width={200}
                         height={200}
                         priority
-                        src={`https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&zoom=18&center=${propertyInfo.Latitude.Value},${propertyInfo.Longitude.Value}&size=300x300&markers=color:blue%7C${propertyInfo.Latitude.Value},${propertyInfo.Longitude.Value}&key=AIzaSyCj9uSdVdZcQtAHRw44oGJjLiti4z7IKOU`}
+                        src={`https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&zoom=18&center=${propertyInfo.Latitude.Value},${propertyInfo.Longitude.Value}&size=300x300&markers=color:blue%7C${propertyInfo.Latitude.Value},${propertyInfo.Longitude.Value}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
                         alt=""
                         />
                     </Box>
@@ -134,10 +133,22 @@ export function EcommerceDetails({
                     <Text className="text-gray-600 dark:text-gray-400 text-md md:text-lg leading-relaxed pb-4 border-b border-muted">{file.description}</Text>
                     
                     <Text className="pt-2 text-gray-700 dark:text-gray-300 pb-4 border-b border-muted">
-                    {file.streetNumber} {file.streetName} <br />
-                    {file.subArea}, {file.city} <br />
-                    {file.stateProvince}, {file.postalCode} <br />
-                    {file.country}
+                        {file.streetNumber && file.streetName && (
+                            <>
+                            {file.streetNumber} {file.streetName} <br />
+                            </>
+                        )}
+                        {file.subArea && file.city && (
+                            <>
+                            {file.subArea}, {file.city} <br />
+                            </>
+                        )}
+                        {file.stateProvince && file.postalCode && (
+                            <>
+                            {file.stateProvince}, {file.postalCode} <br />
+                            </>
+                        )}
+                        {file.country && <>{file.country}</>}
                     </Text>
 
                     <Text className="pt-4 text-gray-700 dark:text-gray-300 pb-6 border-b border-muted">
@@ -155,17 +166,31 @@ export function EcommerceDetails({
                         <Button
                         size="lg"
                         type="submit"
-                        className="h-12 text-sm lg:h-14 lg:text-base"
+                        className="h-12 text-sm lg:h-14 lg:text-base hover:opacity-80"
+                        onClick={() => modifyCart(user, file, cart)}
                         >
-                        <PiShoppingCartSimple className="me-2 h-5 w-5 lg:h-[22px] lg:w-[22px]" />
-                        Add to Cart
+                         {
+                            cart?.fileIds?.some((item) => item === file.id) ? 
+                            (
+                                <>
+                                    <TbShoppingCartX className="me-2 h-5 w-5 lg:h-[22px] lg:w-[22px]" />
+                                    Remove from Cart
+                                </>
+                            ) : 
+                            (
+                                <>
+                                    <TbShoppingCart className="me-2 h-5 w-5 lg:h-[22px] lg:w-[22px]" />
+                                    Add to Cart
+                                </>
+                            )
+                        }
                         </Button>
 
                         {/* Wishlist Button */}
                         <Button
                         variant="outline"
                         size="lg"
-                        onClick={toggleLike}
+                        onClick={() => handleFavourite(file, user)}
                         className="h-12 text-sm lg:h-14 lg:text-base"
                         >
                         <svg
@@ -175,14 +200,14 @@ export function EcommerceDetails({
                             className="me-1 h-6 w-6 lg:h-8 lg:w-8"
                         >
                             <path
-                            fill={isLiked ? '#e00' : 'currentColor'}
-                            fillOpacity={isLiked ? 1 : 0}
+                            fill={file.favouritedBy?.includes(user.id) ? '#e00' : 'currentColor'}
+                            fillOpacity={file.favouritedBy?.includes(user.id) ? 1 : 0}
                             d="M26.492 10.7a6.065 6.065 0 0 0-1.383-1.931 6.457 6.457 0 0 0-2.042-1.295A6.686 6.686 0 0 0 20.577 7a6.697 6.697 0 0 0-3.383.91 6.345 6.345 0 0 0-.693.469 6.345 6.345 0 0 0-.693-.47A6.697 6.697 0 0 0 12.425 7c-.863 0-1.7.159-2.49.474a6.442 6.442 0 0 0-2.041 1.294A6.028 6.028 0 0 0 6.51 10.7 5.776 5.776 0 0 0 6 13.078c0 .777.165 1.586.493 2.41a10.65 10.65 0 0 0 1.172 2.123c.797 1.14 1.894 2.33 3.255 3.537 2.256 2 4.49 3.38 4.585 3.437l.576.354a.809.809 0 0 0 .838 0l.576-.354a36.744 36.744 0 0 0 4.585-3.437c1.361-1.206 2.458-2.396 3.255-3.537.503-.721.9-1.435 1.171-2.123.329-.824.494-1.633.494-2.41a5.736 5.736 0 0 0-.508-2.378Z"
                             />
                             <path
-                            fill={isLiked ? '#e00' : 'currentColor'}
-                            fillOpacity={isLiked ? 1 : 0}
-                            stroke={isLiked ? '#e00' : 'currentColor'}
+                            fill={file.favouritedBy?.includes(user.id) ? '#e00' : 'currentColor'}
+                            fillOpacity={file.favouritedBy?.includes(user.id) ? 1 : 0}
+                            stroke={file.favouritedBy?.includes(user.id) ? '#e00' : 'currentColor'}
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}

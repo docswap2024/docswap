@@ -14,3 +14,14 @@ export const SortOrder = {
 } as const;
 
 export type SortOrderType = ValueOf<typeof SortOrder>;
+
+export const ShopSort = {
+  name: 'name',
+  street: 'streetName',
+  subArea: 'subArea',
+  city: 'city',
+  size: 'size',
+  modified: 'updatedAt',
+} as const;
+
+export type ShopSortType = ValueOf<typeof ShopSort>;

@@ -2,7 +2,11 @@
 
 ### Added
 - Added Ecommerce Shop Page 
-- Added Product Detail Page
+- Added Product Detail Page with Property Details (Sold History, Taxes, BC Assessment, Card Image, Street view, Static Map) 
+  and Content Details (Price, Description, Dimensions, etc.)
+- Added favourites and add to cart functionality
+- Added Sorting By Street Address, City, Postal Code
+- Added List View with more details and actions (Add to Cart, Favourite)
 
 ## [0.1.1] - 2024-09-25
 

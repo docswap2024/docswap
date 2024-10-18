@@ -5,13 +5,15 @@ import { db } from '@/db';
 import {
   CommentType,
   Parcel,
+  CompleteParcel,
   ParcelFolder,
   ecommerceParcels,
   ecommerceParcels as filesModel,
   NewParcel,
+  users as usersModel,
+  users,
 } from '@/db/schema';
 
-import { createId } from '@paralleldrive/cuid2';
 import {
   and,
   asc,
@@ -26,12 +28,7 @@ import {
   SQLWrapper,
 } from 'drizzle-orm';
 
-import { FileSortType, SortOrderType } from '@/config/sorting';
-import {
-  distinctOn,
-  inJsonArray,
-  jsonAggBuildObject,
-} from '@/lib/utils/query-helpers';
+import { ShopSortType, SortOrderType } from '@/config/sorting';
 
 type ParcelsPromise = Promise<Parcel | undefined>;
 
@@ -47,7 +44,7 @@ export const ParcelsService = {
       size?: number;
       page?: number;
       search?: string;
-      sort?: FileSortType;
+      sort?: ShopSortType;
       order?: SortOrderType;
       type?: string;
     },
@@ -55,7 +52,7 @@ export const ParcelsService = {
       allFiles?: boolean;
       excludeByType?: string;
     }
-  ): Promise<{ parcels: Parcel[]; count: number }> => {
+  ): Promise<{ parcels: CompleteParcel[]; count: number }> => {
     const size = Number(params.size);
     const page = params.page ? Number(params.page) - 1 : 0;
     const search = params.search || '';
@@ -78,7 +75,7 @@ export const ParcelsService = {
     }
 
 
-    const { parcels, count }: { parcels: Parcel[]; count: number } =
+    const { parcels, count }: { parcels: CompleteParcel[]; count: number } =
       await db.transaction(async (db): Promise<any> => {
         if (!options?.allFiles) {
           conditions.push(isNull(filesModel.parentId));
@@ -90,18 +87,28 @@ export const ParcelsService = {
             ? filesModel.name
             : sort === 'size'
               ? filesModel.fileSize
+              : sort === 'subArea'
+              ? filesModel.subArea
+              : sort === 'city'
+              ? filesModel.city
+              : sort === 'streetName'
+              ? [filesModel.streetName, filesModel.streetNumber]
               : filesModel.updatedAt;
 
-        const orderBy = order === 'asc' ? asc(sortBy) : desc(sortBy);
+        const orderBy = order === 'asc' ? asc(sql`${sortBy}`) : desc(sql`${sortBy}`);
+
         const parcels = await db
-          .select({
-            ...getTableColumns(filesModel),
-          })
-          .from(filesModel)
-          .where(where)
-          .orderBy(orderBy)
-          .limit(size)
-          .offset(page * size);
+        .select({
+          ...getTableColumns(filesModel), // Select columns from the filesModel (ecommerce_parcels)
+          userName: usersModel.name,  // Select the username column from the usersModel
+        })
+        .from(filesModel)
+        .leftJoin(usersModel, eq(filesModel.userId, usersModel.id))  // Join usersModel on user_id
+        .where(where)
+        .orderBy(orderBy)
+        .limit(size)
+        .offset(page * size);
+        
 
         const [fileCount] = await db
           .select({ count: sqlCount() })
@@ -183,7 +190,7 @@ export const ParcelsService = {
       size?: number;
       page?: number;
       search?: string;
-      sort?: FileSortType;
+      sort?: ShopSortType;
       order?: SortOrderType;
       type?: string;
     },
@@ -230,14 +237,18 @@ export const ParcelsService = {
             ? filesModel.name
             : sort === 'size'
               ? filesModel.fileSize
+              : sort === 'subArea'
+              ? filesModel.subArea
               : filesModel.updatedAt;
 
         const orderBy = order === 'asc' ? asc(sortBy) : desc(sortBy);
         const parcels = await db
           .select({
-            ...getTableColumns(filesModel),
+            ...getTableColumns(filesModel), // Select columns from the filesModel (ecommerce_parcels)
+            userName: usersModel.name,  // Select the username column from the usersModel
           })
           .from(filesModel)
+          .leftJoin(usersModel, eq(filesModel.userId, usersModel.id))  
           .where(where)
           .orderBy(orderBy)
           .limit(size)
@@ -279,9 +290,53 @@ export const ParcelsService = {
     };
   },
 
-  getParcelById: async (id: string) => {
+  getParcelById: async (id: string) : Promise<{ file: CompleteParcel; }>=> {
+    const { file } = await db.transaction(async (db): Promise<any> => {
+      const files = await db
+        .select({
+          ...getTableColumns(filesModel), // Select columns from the filesModel (ecommerce_parcels)
+          userName: usersModel.name,      // Select the username column from the usersModel
+        })
+        .from(filesModel)
+        .leftJoin(usersModel, eq(filesModel.userId, usersModel.id)) // Assuming filesModel has a userId field
+        .where(eq(filesModel.id, id)) // Adding the where clause to match the file ID
+        .limit(1); // Limit the query to 1 result
+    
+      // Return the first file from the result array
+      return { file: files[0] };
+    });
+    return { file };
+
+    // return await db.query.ecommerceParcels.findFirst({
+    //   where: eq(filesModel.id, id),
+    // });
+  },
+
+  getParcelByFileName: async (fileName: string) => {
     return await db.query.ecommerceParcels.findFirst({
-      where: eq(filesModel.id, id),
+      where: eq(filesModel.fileName, fileName),
     });
   },
+
+  makeFavourite: async (fileId: string, flag: boolean, userId: string): ParcelsPromise => {
+    console.log('makeFavourite');
+    console.log(fileId, flag, userId);
+    const query = db
+      .update(filesModel)
+      .set({
+        favouritedBy: flag
+          ? sql`array_append(COALESCE(favourited_by, '{}'), ${userId})`
+          : sql`array_remove(COALESCE(favourited_by, '{}'), ${userId})`
+      })
+      .where(eq(filesModel.id, fileId))
+      .returning();
+
+    console.log(query.toSQL()); // Check the query
+    const [file] = await query;
+
+    console.log(file);
+
+    return file;
+  },
+
 };

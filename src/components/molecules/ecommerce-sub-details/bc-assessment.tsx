@@ -58,7 +58,7 @@ export const BCAssessment = ({ getProperty, propertyType }:{ getProperty: any, p
                             {bcAssessmentDataArray
                             .sort((a, b) => b.year - a.year)
                             .map((bcAssessmentInfo, index) => (
-                            <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-grayLight'}`}>
+                            <tr key={index} className='bg-white'>
                                 <td className='px-2 py-2 md:px-6 md:py-4 border'>{checkIfEmpty(bcAssessmentInfo.year)}</td>
                                 <td className='px-2 py-2 md:px-6 md:py-4 border'>$ {checkIfEmpty(numberWithCommas(bcAssessmentInfo.land_val))}</td>
                                 <td className='px-2 py-2 md:px-6 md:py-4 border'>$ {checkIfEmpty(numberWithCommas(bcAssessmentInfo.improv_val))}</td>

@@ -1,4 +1,4 @@
-import { FileSortType, SortOrderType } from './sorting';
+import { FileSortType, SortOrderType, ShopSortType } from './sorting';
 
 type FileSortOptions = {
   label: string;
@@ -33,5 +33,37 @@ export const ORDER_OPTIONS: OrderOptions[] = [
   {
     label: 'Descending',
     value: 'desc',
+  },
+];
+
+type ShopSortOptions = {
+  label: string;
+  value: ShopSortType;
+};
+
+export const SHOP_SORT_OPTIONS: ShopSortOptions[] = [
+  {
+    label: 'Name',
+    value: 'name',
+  },
+  {
+    label: 'Street',
+    value: 'streetName',
+  },
+  {
+    label: 'Sub Area',
+    value: 'subArea',
+  },
+  {
+    label: 'City',
+    value: 'city',
+  },
+  {
+    label: 'Modified',
+    value: 'updatedAt',
+  },
+  {
+    label: 'Size',
+    value: 'size',
   },
 ];

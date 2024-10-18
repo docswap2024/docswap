@@ -58,7 +58,7 @@ export const LastSold = ({ getProperty, propertyType }:{ getProperty: any, prope
                       </thead>
                       <tbody>
                         {propertyInfoArray.map((propertyInfo, index) => (
-                          <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-steel-700'}`}>
+                          <tr key={index} className='bg-white'>
                             <td className="px-2 py-2 md:px-6 md:py-4 border">{propertyInfo.Date}</td>
                             <td className="px-2 py-2 md:px-6 md:py-4 border">{propertyInfo.Type}</td>
                             <td className="px-2 py-2 md:px-6 md:py-4 border">{`$ ${checkIfEmpty(numberWithCommas(propertyInfo.Price))}`}</td>
