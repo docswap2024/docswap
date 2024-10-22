@@ -16,10 +16,12 @@ import {
     type CompleteBreadcrumbs,
     type Parcel,
     type CompleteParcel,
-    type Cart
+    type Cart,
+    CartWithFiles
 } from '@/db/schema';
 import { Breadcrumbs } from '@/components/molecules/breadcrumbs/breadcrumbs';
 import { ShopFoldersFiles } from '@/components/organisms/shop-folders-files';
+import CartDrawer from '@/components/templates/cart-drawer';
 
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { RiArrowDownSLine, RiCheckLine, RiFilterLine } from 'react-icons/ri';
@@ -88,7 +90,8 @@ export const EcommerceShop = ({
     defaultLayout,
     folders,
     breadcrumbs,
-    cart
+    cart,
+    cartWithFiles
 }: {
     parcels: CompleteParcel[];
     user: User;
@@ -97,6 +100,7 @@ export const EcommerceShop = ({
     folders: Parcel[]; 
     breadcrumbs?: CompleteBreadcrumbs[];
     cart: Cart | null;
+    cartWithFiles: CartWithFiles | null;
 }) => {
     const [filterDrawerState, setFilterDrawerState] = useState(false);
     const [filterVisibility, setFilterVisibility] = useState<boolean>(false);
@@ -420,6 +424,7 @@ export const EcommerceShop = ({
                 </Flex>
                 </Box>
             </Drawer>
+            <CartDrawer cart={cart} user={user} cartWithFiles={cartWithFiles} />
         </Flex>
 
     )

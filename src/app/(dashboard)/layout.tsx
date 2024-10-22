@@ -65,7 +65,7 @@ export default async function RootLayout({
                   className="p-5 pt-0 3xl:p-10 3xl:pt-0 grow"
                 >
                   <Header />
-                  <Container className="relative mt-4">{children}</Container>
+                  <Container className="relative mt-4">{children} </Container>
                 </Flex>
                 <Footer variant="dashboard" />
               </div>

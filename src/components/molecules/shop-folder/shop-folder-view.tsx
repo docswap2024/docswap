@@ -3,15 +3,10 @@ import { format } from 'date-fns';
 import prettyBytes from 'pretty-bytes';
 import { Text } from 'rizzui';
 import { useRouter } from 'next-nprogress-bar';
-
-import { PAGES } from '@/config/pages';
 import { cn } from '@/lib/utils/cn';
 import { FolderIcon } from '@/components/atoms/icons/folder';
 import { Box, Flex } from '@/components/atoms/layout';
 import Link from '@/components/atoms/next/link';
-import { getR2FileLink } from '@/lib/utils/parcel';
-
-import { getUserDetails} from '@/server/actions/user.action';
 import { useState, useEffect } from 'react';
 import { FavouriteAction } from '@/components/molecules/favourite-action';
 import { AddToCartAction } from '@/components/molecules/add-to-cart-action';
@@ -19,6 +14,7 @@ import { User } from 'lucia';
 import Image from '@/components/atoms/next/image';
 import { modifyCart } from '@/lib/utils/cart';
 import { TbShoppingCartX, TbShoppingCart } from "react-icons/tb";
+import { getR2FileLink } from '@/lib/utils/parcel';
 
 export const ShopFolderView = ({
   file,
@@ -34,7 +30,6 @@ export const ShopFolderView = ({
   cart: Cart | null;
 }) => {
   const router = useRouter();
-  const folderSlug = PAGES.DASHBOARD.SHOP_FOLDERS + '/' + file.id;
   const [cardImage, setCardImage] = useState<string>('');
 
   const parentFolder =
@@ -42,15 +37,15 @@ export const ShopFolderView = ({
 
 
   useEffect(() => {
-    const getCardR2Link = async () => {
-
-      const imagePath = `Streetview/${file.streetName}/landing/${file.name}.jpg`;
+    const fetchCardImage = async () => {
+      const imagePath = `Streetview/${file.streetName}/card/${file.streetNumber}-${file.streetName}.jpg`;
       const link = await getR2FileLink(imagePath);
       if (link) {
         setCardImage(link);
       }
     };
-    getCardR2Link();
+  
+    fetchCardImage();
   }, []);
 
 

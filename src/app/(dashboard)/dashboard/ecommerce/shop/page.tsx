@@ -2,9 +2,11 @@ import { cookies } from 'next/headers';
 import { FilesLayoutType } from '@/components/organisms/file-layout-switcher';
 import { EcommerceShop } from '@/components/templates/ecommerce-shop'; 
 import { ShopSortType, SortOrderType } from '@/config/sorting';
-import { getParcels, getAllFolders} from '@/server/actions/parcels.action';
+import { getParcels, getAllFolders, getParcelById} from '@/server/actions/parcels.action';
 import { getCurrentUser } from '@/lib/utils/session';
 import { getCart} from '@/server/actions/cart.action';
+import { CartWithFiles } from '@/db/schema';
+import { getCartWithFileDetails } from "@/lib/utils/cart";
 
 type SearchParams = {
   search?: string;
@@ -57,6 +59,8 @@ export default async function Page({
   const folders = await getAllFolders();
   const cart = await getCart(user?.id);
 
+  const cartWithFiles = await getCartWithFileDetails(user?.id);
+
   return (
     <>
         <EcommerceShop 
@@ -66,6 +70,7 @@ export default async function Page({
          defaultLayout={defaultLayout as FilesLayoutType} 
          folders={folders}
          cart={cart || null}
+         cartWithFiles={cartWithFiles || null}
         />
     </>
   );

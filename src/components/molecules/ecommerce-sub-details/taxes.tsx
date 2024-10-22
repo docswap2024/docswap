@@ -20,7 +20,7 @@ export const Taxes  = ({ getProperty, propertyType }:{ getProperty: any, propert
             <div
             role="button"
             onClick={toggle}
-            className="flex w-full cursor-pointer items-center justify-between py-6 font-lexend text-lg font-semibold text-gray-900"
+            className="flex w-full cursor-pointer items-center justify-between py-6 font-lexend text-lg font-semibold text-gray-900 dark:text-white"
             >
             <span>
                Taxes
@@ -39,7 +39,7 @@ export const Taxes  = ({ getProperty, propertyType }:{ getProperty: any, propert
         <div className="-mt-2 pb-7">
           {getProperty.GrossTaxData.Value && (
             <table className="min-w-full text-center text-black">
-                <thead className="bg-steel-50/70 border">
+                <thead className="bg-steel-50/70 dark:bg-steel-800/90 border text-steel-900 dark:text-white">
                 <tr>
                   <th scope='col' className="px-4 py-2 md:px-6 md:py-3 border">Year</th>
                   <th scope='col' className="px-4 py-2 md:px-6 md:py-3 border">Gross Tax</th>
@@ -50,7 +50,7 @@ export const Taxes  = ({ getProperty, propertyType }:{ getProperty: any, propert
                 {taxDataArray
                 .sort((a, b) => b.year - a.year)
                 .map((taxInfo, index) => (
-                  <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-grayLight'}`}>
+                  <tr key={index} className='bg-white dark:bg-steel-900 text-gray-600 dark:text-gray-400'>
                     <td className="px-2 py-2 md:px-6 md:py-4 border">{checkIfEmpty(taxInfo.year)}</td>
                     <td className="px-2 py-2 md:px-6 md:py-4 border">$ {checkIfEmpty(numberWithCommas(taxInfo.tax))}</td>
                     <td className="px-2 py-2 md:px-6 md:py-4 border">{checkIfEmpty(taxInfo.change)}</td>
@@ -61,11 +61,11 @@ export const Taxes  = ({ getProperty, propertyType }:{ getProperty: any, propert
           )} 
           </div>
     
-          <div className="grid grid-cols-2 md:grid-cols-3 p-4 pt-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 p-4 pt-5 text-steel-900 dark:text-white">
             {data.map((item, index) => (
               <div className={`min-w-0 flex-auto border-b p-3 ${index === data.length - 1 ? 'col-span-3' : ''} ${index === data.length - 2 ? 'col-span-2 md:col-span-1' : ''}`} key={index}>
-                <p className="font-semibold leading-6 text-black uppercase">{item.name}</p>
-                <p className="mt-1 leading-5 text-black break-all">{checkIfEmpty(item.value)}</p>
+                <p className="font-semibold leading-6 uppercase">{item.name}</p>
+                <p className="mt-1 leading-5 break-all">{checkIfEmpty(item.value)}</p>
               </div>
             ))}
           </div>

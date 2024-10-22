@@ -43,20 +43,16 @@ export const ShopFileView = ({
   const iconType = file.type as FileIconType | null;
 
   useEffect(() => {
-    const getCardR2Link = async () => {
-      let modifiedFileName = file.fileName;
-
-      // Check if 'landing' is in the fileName and replace it with 'card'
-      if (modifiedFileName.includes('landing')) {
-        setSaleImageSize({ width: 1920, height: 870 });
-        modifiedFileName = modifiedFileName.replace('landing', 'card');
-      }
-      const link = await getR2FileLink(modifiedFileName);
+    const fetchCardImage = async () => {
+      const imagePath = `Streetview/${file.streetName}/card/${file.streetNumber}-${file.streetName}.jpg`;
+      const link = await getR2FileLink(imagePath);
       if (link) {
         setCardImage(link);
       }
     };
-    getCardR2Link();
+  
+    fetchCardImage();
+
   }, []);
   
 

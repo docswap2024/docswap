@@ -1,6 +1,6 @@
 "use client";
 
-import {Parcel, CompleteParcel, Cart } from '@/db/schema';
+import {Parcel, CompleteParcel, Cart, CartWithFiles } from '@/db/schema';
 import { User } from 'lucia';
 import { useRouter } from 'next-nprogress-bar';
 import { useState, useEffect } from 'react';
@@ -12,6 +12,7 @@ import axios from 'axios';
 import {
     RiArrowLeftLine,
 } from 'react-icons/ri';
+import Link from 'next/link';
 import { numberWithCommas, checkIfEmpty } from '@/lib/utils/format';
 import { handleFavourite } from '@/lib/utils/favourite';
 import { modifyCart } from '@/lib/utils/cart';
@@ -19,8 +20,9 @@ import { BCAssessment } from '../molecules/ecommerce-sub-details/bc-assessment';
 import { LastSold } from '@/components/molecules/ecommerce-sub-details/last-sold';
 import { Taxes } from '@/components/molecules/ecommerce-sub-details/taxes';
 import { FolderContents } from '@/components/molecules/ecommerce-sub-details/folder-contents';
+import CartDrawer from '@/components/templates/cart-drawer';
 import { getR2FileLink } from '@/lib/utils/parcel';
-
+import { PAGES as routes} from '@/config/pages';
 
 interface FileNode extends CompleteParcel {
     children?: FileNode[];
@@ -30,26 +32,47 @@ export function EcommerceFolderDetails({
     file,
     user,
     fileTree,
-    cart
+    cart,
+    cartWithFiles,
 }: {
     file: CompleteParcel;
     user: User;
     fileTree: FileNode[];
     cart: Cart | null;
+    cartWithFiles: CartWithFiles | null;
 }) {
     const [propertyInfo, setPropertyInfo] = useState<any>(null);
     const [cardImage, setCardImage] = useState<string>('');
     const router = useRouter();
     console.log(file);
+
+    const areAllChildrenInCart = (children: FileNode[] | undefined): boolean => {
+        if (!children || children.length === 0) return false;
+        return children.every((child) => {
+            if (child.type === 'folder') {
+                return areAllChildrenInCart(child.children) || cart?.fileIds?.some((item) => item === child.id);
+            } else {
+                return cart?.fileIds?.some((item) => item === child.id);
+            }
+        });
+    };
+
+    const allChildrenAddedToCart = file.type === 'folder' ? areAllChildrenInCart(fileTree) : false;
+
+    const shouldDisableButton = allChildrenAddedToCart;
+
+    const isCartEmpty = !cart || cart?.fileIds?.length === 0;
     
     useEffect(() => {
-        const getCardR2Link = async () => {
-        const imagePath = `Streetview/${file.streetName}/landing/${file.name}.jpg`;
-          const link = await getR2FileLink(imagePath);
-          if (link) {
-            setCardImage(link);
-          }
+        const fetchCardImage = async () => {
+            const imagePath = `Streetview/${file.streetName}/card/${file.streetNumber}-${file.streetName}.jpg`;
+            const link = await getR2FileLink(imagePath);
+            if (link) {
+              setCardImage(link);
+            }
         };
+        
+        fetchCardImage();
 
         const getPropertyDetails = async () => {
             try {
@@ -66,7 +89,6 @@ export function EcommerceFolderDetails({
             }
         };
         getPropertyDetails();
-        getCardR2Link();
     }, []);
 
     return (
@@ -86,7 +108,7 @@ export function EcommerceFolderDetails({
             {propertyInfo &&
                 <Box className="flex flex-col sm:flex-row">
                     {/* Left Image Section */}
-                    <Box className='grid grid-cols-2 gap-2'>
+                    <Box className='w-1/4 grid grid-cols-2 gap-2'>
                         {/* First image spanning 2 rows and 1 column */}
                         <Box className="col-span-2">
                             {cardImage && (
@@ -127,7 +149,7 @@ export function EcommerceFolderDetails({
                     </Box>
 
                     {/* Right Details Section */}
-                    <Box className="w-full sm:w-2/3 sm:p-8 sm:pt-2 pt-0 space-y-2">
+                    <Box className="w-full sm:w-3/4 sm:p-8 sm:pt-2 pt-0 space-y-2">
                         <Text className="text-steel-900 dark:text-white font-medium text-lg md:text-2xl">
                             {file.name}
                         </Text>
@@ -159,14 +181,31 @@ export function EcommerceFolderDetails({
                             <span className="font-semibold">Lot Size:</span> {checkIfEmpty(numberWithCommas(propertyInfo.LotSize.Value))} sq ft
                         </Text>
 
+                        <div className="flex flex-col font-lexend text-base">
+                            {/* Price */}
+                            <div className="text-lg font-semibold text-gray-900 lg:text-xl">
+                                $20.00
+                            </div>
+
+                            {/* Inclusive of all taxes */}
+                            <div className="text-green-dark text-sm font-medium mt-1">
+                                Inclusive of all taxes
+                            </div>
+                        </div>
+
                         {/* Add to Cart and Wishlist Buttons */}
                         <Box className="grid grid-cols-1 gap-4 pt-7 sm:grid-cols-2 xl:gap-6">
                             {/* Add to Cart Button */}
                             <Button
                             size="lg"
                             type="submit"
-                            className="h-12 text-sm lg:h-14 lg:text-base hover:opacity-80"
                             onClick={() => modifyCart(user, file, cart)}
+                            disabled={shouldDisableButton}
+                            className={`${
+                                shouldDisableButton
+                                    ? 'opacity-50 cursor-not-allowed' // Disabled style
+                                    : ''
+                            } h-12 text-sm lg:h-14 lg:text-base hover:opacity-80`}
                             >
                             {
                                 cart?.fileIds?.some((item) => item === file.id) ? 
@@ -219,15 +258,42 @@ export function EcommerceFolderDetails({
                     </Box>
                 </Box>
             }
+
+            <div className="mt-8 px-6 py-4 bg-gray-100 rounded-lg shadow-md text-center">
+                {isCartEmpty ? (
+                    <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-3">Your Cart is Empty</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                        To swap documents, please add the desired items to your cart.
+                    </p>
+                    </div>
+                ) : (
+                    <div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-3">Swap Documents with DocSwap</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Want to exchange this document for one of your own? Use DocSwap to easily swap files in seconds. No additional fees required for swapping.
+                        </p>
+
+                        <Link
+                            href={routes.DASHBOARD.SWAP_DOCS}
+                            className="inline-flex items-center justify-center bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-md transition duration-300"
+                        >
+                            Swap Documents Now
+                        </Link>
+                    </div>
+                )}
+            </div>
             {
             propertyInfo &&
             <Box className="flex flex-col">
-                <FolderContents fileTree={fileTree} />
+                <FolderContents fileTree={fileTree} parentAddedToCart={cart?.fileIds?.some((item) => item === file.id) || false} user={user} cart={cart} />
                 <LastSold getProperty={propertyInfo} propertyType="detached" />
                 <BCAssessment getProperty={propertyInfo} propertyType="detached" />
                 <Taxes getProperty={propertyInfo} propertyType="detached" />
             </Box>
             }
+
+        <CartDrawer cart={cart} user={user} cartWithFiles={cartWithFiles} />
         </Box>
     );
 }

@@ -29,7 +29,7 @@ export const LastSold = ({ getProperty, propertyType }:{ getProperty: any, prope
                 <div
                 role="button"
                 onClick={toggle}
-                className="flex w-full cursor-pointer items-center justify-between py-6 font-lexend text-lg font-semibold text-gray-900"
+                className="flex w-full cursor-pointer items-center justify-between py-6 font-lexend text-lg font-semibold text-gray-900 dark:text-white"
                 >
                 <span>
                     Last Sold: <span className="font-normal">{formatDate(getProperty.LastMLSDate.Value)}</span>
@@ -48,17 +48,17 @@ export const LastSold = ({ getProperty, propertyType }:{ getProperty: any, prope
             <div className="-mt-2 pb-7">
                 {getProperty.MLSData.Value && (
                     <div className="w-full overflow-x-auto mt-3">
-                    <table className="min-w-full text-center text-black">
-                      <thead className="bg-steel-50/70 border">
+                    <table className="min-w-full text-center">
+                      <thead className="bg-steel-50/70 border dark:bg-steel-900/70 text-steel-900 dark:text-white">
                         <tr>
-                          <th scope="col" className="px-4 py-2 md:px-6 md:py-3 border">Date</th>
-                          <th scope="col" className="px-4 py-2 md:px-6 md:py-3 border">Type</th>
+                          <th scope="col" className="px-4 py-2 md:px-6 md:py-3 border ">Date</th>
+                          <th scope="col" className="px-4 py-2 md:px-6 md:py-3 border ">Type</th>
                           <th scope="col" className="px-4 py-2 md:px-6 md:py-3 border">Sold Price</th>
                         </tr>
                       </thead>
                       <tbody>
                         {propertyInfoArray.map((propertyInfo, index) => (
-                          <tr key={index} className='bg-white'>
+                          <tr key={index} className='bg-white dark:dark:bg-steel-900 text-gray-600 dark:text-gray-400'>
                             <td className="px-2 py-2 md:px-6 md:py-4 border">{propertyInfo.Date}</td>
                             <td className="px-2 py-2 md:px-6 md:py-4 border">{propertyInfo.Type}</td>
                             <td className="px-2 py-2 md:px-6 md:py-4 border">{`$ ${checkIfEmpty(numberWithCommas(propertyInfo.Price))}`}</td>
@@ -71,9 +71,9 @@ export const LastSold = ({ getProperty, propertyType }:{ getProperty: any, prope
 
                 <div className="grid md:grid-cols-3 grid-cols-2 p-4 pt-5">
                     {data.map((item, index) => (
-                    <div className="min-w-0 flex-auto border-b p-2 md:p-3" key={index}>
-                        <p className="font-semibold text-sm md:text-base leading-5 text-black uppercase">{item.name}</p>
-                        <p className="mt-1 truncate text-xs md:text-sm leading-4 text-black">{checkIfEmpty(item.value)}</p>
+                    <div className="min-w-0 flex-auto border-b p-2 md:p-3 text-steel-900 dark:text-white" key={index}>
+                        <p className="font-semibold text-sm md:text-base leading-5 uppercase">{item.name}</p>
+                        <p className="mt-1 truncate text-xs md:text-sm leading-4">{checkIfEmpty(item.value)}</p>
                     </div>
                     ))}
                 </div>

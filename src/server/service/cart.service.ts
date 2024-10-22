@@ -1,7 +1,6 @@
-import { carts as CartsModel, Cart} from '@/db/schema';
+import { carts as CartsModel, Cart, ecommerceParcels as filesModel,} from '@/db/schema';
 import { db } from '@/db';
-import { eq, sql, count as sqlCount } from 'drizzle-orm';
-import { getCart } from '../actions/cart.action';
+import { eq, sql, count as sqlCount, getTableColumns, } from 'drizzle-orm';
 
 type CartsPromise = Promise<Cart | undefined>;
 
@@ -69,4 +68,6 @@ export const CartService = {
             where: eq(CartsModel.userId, userId),
         });
     }
+
+    
 };

@@ -19,7 +19,7 @@ export const BCAssessment = ({ getProperty, propertyType }:{ getProperty: any, p
                 <div
                 role="button"
                 onClick={toggle}
-                className="flex w-full cursor-pointer items-center justify-between py-6 font-lexend text-lg font-semibold text-gray-900"
+                className="flex w-full cursor-pointer items-center justify-between py-6 font-lexend text-lg font-semibold text-gray-900 dark:text-white"
                 >
                 BC Assessment
                 <div className="flex shrink-0 items-center justify-center">
@@ -36,17 +36,17 @@ export const BCAssessment = ({ getProperty, propertyType }:{ getProperty: any, p
             <div className="-mt-2 pb-7">
                 <div className="grid grid-cols-2 md:grid-cols-3 p-4 pt-5">
                     {data.map((item, index) => (
-                    <div className="min-w-0 flex-auto border-b p-3" key={index}>
-                        <p className="font-semibold leading-6 text-black uppercase">{item.name}</p>
-                        <p className="mt-1 truncate leading-5 text-black">{checkIfEmpty(item.value)}</p>
+                    <div className="min-w-0 flex-auto border-b p-3 text-steel-900 dark:text-white" key={index}>
+                        <p className="font-semibold leading-6 uppercase">{item.name}</p>
+                        <p className="mt-1 truncate leading-5">{checkIfEmpty(item.value)}</p>
                     </div>
                     ))}
                 </div>
 
                 <div>
                 {getProperty.BCAssessmentData.Value && (
-                    <table className="min-w-full text-center text-black">
-                      <thead className="bg-steel-50/70 border">
+                    <table className="min-w-full text-center">
+                      <thead className="bg-steel-50/70 dark:bg-steel-800/90 border text-steel-900 dark:text-white">
                         <tr>
                         <th scope='col' className='px-4 py-2 md:px-6 md:py-3 border'>July 1</th>
                         <th scope='col' className='px-4 py-2 md:px-6 md:py-3 border'>Land Value</th>
@@ -58,9 +58,9 @@ export const BCAssessment = ({ getProperty, propertyType }:{ getProperty: any, p
                             {bcAssessmentDataArray
                             .sort((a, b) => b.year - a.year)
                             .map((bcAssessmentInfo, index) => (
-                            <tr key={index} className='bg-white'>
+                            <tr key={index} className='bg-white dark:bg-steel-900 text-gray-600 dark:text-gray-400'>
                                 <td className='px-2 py-2 md:px-6 md:py-4 border'>{checkIfEmpty(bcAssessmentInfo.year)}</td>
-                                <td className='px-2 py-2 md:px-6 md:py-4 border'>$ {checkIfEmpty(numberWithCommas(bcAssessmentInfo.land_val))}</td>
+                                <td className='px-2 py-2 md:px-6 md:py-4 border '>$ {checkIfEmpty(numberWithCommas(bcAssessmentInfo.land_val))}</td>
                                 <td className='px-2 py-2 md:px-6 md:py-4 border'>$ {checkIfEmpty(numberWithCommas(bcAssessmentInfo.improv_val))}</td>
                                 <td className='px-2 py-2 md:px-6 md:py-4 border'>$ {checkIfEmpty(numberWithCommas(bcAssessmentInfo.total_val))}</td>
                             </tr>

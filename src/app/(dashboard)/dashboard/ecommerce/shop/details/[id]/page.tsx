@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { CompleteParcel } from '@/db/schema';
+import { CompleteParcel, CartWithFiles } from '@/db/schema';
 import { getParcelById } from '@/server/actions/parcels.action';
 
 import { getCurrentUser } from '@/lib/utils/session';
@@ -8,13 +8,17 @@ import { EcommerceFolderDetails } from '@/components/templates/ecommerce-folder-
 import { getAllFolders, getFolders} from '@/server/actions/parcels.action';
 import { isCuid } from '@paralleldrive/cuid2';
 import { getCart} from '@/server/actions/cart.action';
+import { getCartWithFileDetails } from "@/lib/utils/cart";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const user = await getCurrentUser();
   const { file } = await getParcelById(params.id);
   let cart = await getCart(user?.id);
 
-  console.log('file', file);
+
+  const cartWithFiles = await getCartWithFileDetails(user?.id);
+
+  console.log('cartWithFiles', JSON.stringify(cartWithFiles, null, 2));
   
   let fileTree: any[] = [];
   
@@ -42,9 +46,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     file.type === 'folder' ? (
-      <EcommerceFolderDetails file={file as CompleteParcel} fileTree={fileTree} user={user}  cart={cart || null} />
+      <EcommerceFolderDetails file={file as CompleteParcel} fileTree={fileTree} user={user}  cart={cart || null} cartWithFiles={cartWithFiles || null} />
     ) : (
-      <EcommerceFileDetails file={file as CompleteParcel} user={user}  cart={cart || null} />
+      <EcommerceFileDetails file={file as CompleteParcel} user={user}  cart={cart || null} cartWithFiles={cartWithFiles || null} />
     )
   );
 }

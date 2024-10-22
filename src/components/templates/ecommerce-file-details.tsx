@@ -1,13 +1,12 @@
 "use client";
 
-import { CompleteParcel, Cart } from '@/db/schema';
+import { CompleteParcel, Cart, CartWithFiles } from '@/db/schema';
 import { User } from 'lucia';
 import { useEffect, useState } from 'react';
-import { getR2FileLink } from '@/lib/utils/parcel';
 import Image from '@/components/atoms/next/image';
 import { Box, Flex } from '@/components/atoms/layout';
 import { cn } from '@/lib/utils/cn';
-import { Button, Text, ActionIcon, Collapse} from 'rizzui';
+import { Button, Text, ActionIcon} from 'rizzui';
 import { TbShoppingCartX, TbShoppingCart } from "react-icons/tb";
 import { useRouter } from 'next-nprogress-bar';
 import { LastSold } from '@/components/molecules/ecommerce-sub-details/last-sold';
@@ -20,15 +19,19 @@ import { BCAssessment } from '../molecules/ecommerce-sub-details/bc-assessment';
 import { numberWithCommas, checkIfEmpty } from '@/lib/utils/format';
 import { handleFavourite } from '@/lib/utils/favourite';
 import { modifyCart } from '@/lib/utils/cart';
+import { getR2FileLink } from '@/lib/utils/parcel';
+import CartDrawer from '@/components/templates/cart-drawer';
 
 export function EcommerceFileDetails({
     file,
     user,
-    cart
+    cart,
+    cartWithFiles
 }: {
     file: CompleteParcel;
     user: User;
     cart: Cart | null;
+    cartWithFiles: CartWithFiles | null;
 }) {
     const [cardImage, setCardImage] = useState<string>('');
     const [propertyInfo, setPropertyInfo] = useState<any>(null);
@@ -36,18 +39,15 @@ export function EcommerceFileDetails({
 
     
     useEffect(() => {
-        const getCardR2Link = async () => {
-          let modifiedFileName = file.fileName;
-    
-          // Check if 'landing' is in the fileName and replace it with 'card'
-          if (modifiedFileName.includes('landing')) {
-            modifiedFileName = modifiedFileName.replace('landing', 'card');
-          }
-          const link = await getR2FileLink(modifiedFileName);
-          if (link) {
-            setCardImage(link);
-          }
+        const fetchCardImage = async () => {
+            const imagePath = `Streetview/${file.streetName}/card/${file.streetNumber}-${file.streetName}.jpg`;
+            const link = await getR2FileLink(imagePath);
+            if (link) {
+              setCardImage(link);
+            }
         };
+        fetchCardImage();
+
 
         const getPropertyDetails = async () => {
             try {
@@ -64,7 +64,6 @@ export function EcommerceFileDetails({
             }
         };
         getPropertyDetails();
-        getCardR2Link();
     }, []);
 
    return (
@@ -228,6 +227,7 @@ export function EcommerceFileDetails({
                 <Taxes getProperty={propertyInfo} propertyType="detached" />
             </Box>
         }
+        <CartDrawer cart={cart} user={user} cartWithFiles={cartWithFiles} />
       </Box>
 
   );

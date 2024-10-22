@@ -1,13 +1,18 @@
 import { Collapse } from 'rizzui';
 import { PiCaretDownBold } from 'react-icons/pi';
 import { cn } from '@/lib/utils/cn';
-import { CompleteParcel } from '@/db/schema';
+import { CompleteParcel, Cart } from '@/db/schema';
+import { User } from 'lucia';
 import React, { useState } from 'react';
 import format from 'date-fns/format';
 import prettyBytes from 'pretty-bytes';
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'; 
 import { DynamicFileIcon, FileIconType } from '@/components/atoms/dynamic-file-icon';
 import { FolderIcon } from '@/components/atoms/icons/folder';
+import { modifyCart } from '@/lib/utils/cart';
+import { TbShoppingCartX, TbShoppingCart } from "react-icons/tb";
+import { Flex } from '@/components/atoms/layout';
+import { FavouriteAction } from '@/components/molecules/favourite-action';
 
 interface FileNode extends CompleteParcel {
     children?: FileNode[];
@@ -16,14 +21,34 @@ interface FileNode extends CompleteParcel {
 interface FileTreeNodeProps {
     node: FileNode;
     level?: number; // Level to calculate the margin for nested folders
+    user: User;
+    cart: Cart | null;
+    parentAddedToCart: boolean;
 }
 
-const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, level = 0 }) => {
+const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, level = 0 , parentAddedToCart, user, cart}) => {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
     const toggleCollapse = () => {
       setIsCollapsed(!isCollapsed);
     };
+
+    // Check if all children are in the cart (recursive for folders)
+    const areAllChildrenInCart = (children: FileNode[] | undefined): boolean => {
+        if (!children || children.length === 0) return false;
+        return children.every((child) => {
+            if (child.type === 'folder') {
+                return areAllChildrenInCart(child.children);
+            } else {
+                return cart?.fileIds?.some((item) => item === child.id);
+            }
+        });
+    };
+
+    const allChildrenAddedToCart = node.type === 'folder' ? areAllChildrenInCart(node.children) : false;
+
+    // If parent or all children are in the cart, disable the add to cart button
+    const shouldDisableButton = parentAddedToCart || allChildrenAddedToCart;
     
   
     return (
@@ -70,13 +95,44 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, level = 0 }) => {
                         )
                     }
                 </td>
+                <td className="px-4 md:px-6">
+                    <Flex
+                    justify="center"
+                    className="text-steel-700 dark:text-steel-300"
+                    >
+                        <button
+                        onClick={(e) => {
+                        e.stopPropagation(); // Prevents the click event from triggering the router push
+                        modifyCart(user, node, cart);
+                        }}
+                        disabled={shouldDisableButton}
+                        className={`${
+                            shouldDisableButton
+                                ? 'opacity-50 cursor-not-allowed' // Disabled style
+                                : ''
+                        }`}
+                        >
+                            {cart?.fileIds?.some((item) => item === node.id) ? (
+                            <>
+                                <TbShoppingCartX className="h-5 w-5" />
+                            </>
+                            ) : (
+                            <>
+                                <TbShoppingCart className="h-5 w-5" />
+                            </>
+                            )}
+                        </button>
+                        |
+                        <FavouriteAction file={node} user={user} />
+                    </Flex>
+                </td>
             </tr>
 
             {/* Nested Rows for Folders */}
             {!isCollapsed && node.children && node.type === 'folder' && (
             <>
                 {node.children.map((child) => (
-                <FileTreeNode key={child.id} node={child} level={level + 1} />
+                <FileTreeNode key={child.id} node={child} level={level + 1} parentAddedToCart={parentAddedToCart || cart?.fileIds?.some((item) => item === node.id)|| false} user={user} cart={cart} />
                 ))}
             </>
             )}
@@ -85,7 +141,7 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, level = 0 }) => {
 };
 
 
-export const FolderContents = ({fileTree}: {fileTree: FileNode[]}) => {
+export const FolderContents = ({fileTree, user, cart, parentAddedToCart}: {fileTree: FileNode[], user: User, cart: Cart | null, parentAddedToCart: boolean}) => {
     return (
         <Collapse
             className="last-of-type:border-t-0 border-b border-muted "
@@ -94,7 +150,7 @@ export const FolderContents = ({fileTree}: {fileTree: FileNode[]}) => {
                 <div
                 role="button"
                 onClick={toggle}
-                className="flex w-full cursor-pointer items-center justify-between py-6 font-lexend text-lg font-semibold text-gray-900"
+                className="flex w-full cursor-pointer items-center justify-between py-6 font-lexend text-lg font-semibold text-gray-900 dark:text-white"
                 >
                 Contents
                 <div className="flex shrink-0 items-center justify-center">
@@ -108,9 +164,9 @@ export const FolderContents = ({fileTree}: {fileTree: FileNode[]}) => {
                 </div>
             )}
         >
-            <div className="-mt-2 pb-7">
+            <div className="-mt-2 pb-7 overflow-auto">
                 <table className="table-auto w-full border-collapse border border-gray-300">
-                    <thead className="bg-gray-100">
+                    <thead className="bg-steel-50/70 border dark:bg-steel-900/70 text-steel-900 dark:text-white">
                     <tr>
                         <th scope='col' className='text-left px-4 py-2 md:px-6 md:py-3 border'>Name</th>
                         <th scope='col' className='text-left px-4 py-2 md:px-6 md:py-3 border'>Description</th>
@@ -119,11 +175,12 @@ export const FolderContents = ({fileTree}: {fileTree: FileNode[]}) => {
                         <th scope='col' className='text-left px-4 py-2 md:px-6 md:py-3 border'>File Size</th>
                         <th scope='col' className='text-left px-4 py-2 md:px-6 md:py-3 border'>Dimensions</th>
                         <th scope ='col' className='text-left px-4 py-2 md:px-6 md:py-3 border'>Cost</th>
+                        <th scope='col' className='text-left px-4 py-2 md:px-6 md:py-3 border'>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {fileTree.map((node) => (
-                        <FileTreeNode key={node.id} node={node} />
+                        <FileTreeNode key={node.id} node={node} user={user} cart={cart} parentAddedToCart={parentAddedToCart || false} />
                     ))}
                     </tbody>
                 </table>

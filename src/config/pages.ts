@@ -17,7 +17,8 @@ export const PAGES = {
     TRASH: '/dashboard/files/trash',
     FOLDERS: '/dashboard/folders',
     SHOP: '/dashboard/ecommerce/shop',
-    SHOP_FOLDERS: '/dashboard/ecommerce/shop/folders',
+    SHOP_DETAILS: (id: string) => `/dashboard/ecommerce/shop/details/${id}`,
+    SWAP_DOCS: '/dashboard/ecommerce/shop/swapDocs'
   },
   ADMIN: {
     ROOT: '/admin',
