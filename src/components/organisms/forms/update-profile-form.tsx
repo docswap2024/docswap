@@ -26,7 +26,7 @@ export const UpdateProfileForm = ({ user }: { user: User }) => {
     try {
       setIsLoading(true);
       if (Array.isArray(inputs.image)) {
-        const image = await uploadSingleFile(inputs.image[0]);
+        const image = await uploadSingleFile(inputs.image[0], 'file');
         inputs.image = image;
       }
       await updateProfile(inputs);

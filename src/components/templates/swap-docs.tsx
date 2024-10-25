@@ -1,164 +1,357 @@
-"use client" 
+"use client" ;
 
 import {
-    type Cart,
-    CartWithFiles
+ CompleteSwap
 } from '@/db/schema';
 import { User } from 'lucia';
-import { Box, Flex } from '@/components/atoms/layout';
-import { PageHeader } from '@/components/atoms/page-header';
+import { Controller, SubmitHandler } from 'react-hook-form';
 import { useState } from 'react';
-import { PiTrash } from 'react-icons/pi';
-import { Button } from 'rizzui';
-import { TrashIcon, FolderOpen } from 'lucide-react';
+import {  Text, Button, Input, Textarea, Switch } from 'rizzui';
+import { FaEllipsisV } from "react-icons/fa";
+import { acceptedMimeType, uploadFilesAndGetPaths } from '@/lib/utils/file';
+import { toast } from 'sonner';
+import { MESSAGES } from '@/config/messages';
+import { handleError } from '@/lib/utils/error';
+import { uploadSwapDocument } from '@/server/actions/swap.action';
+import prettyBytes from 'pretty-bytes';
+import {
+    UploadSwapInput,
+    UploadSwapSchema,
+} from '@/lib/validations/swap.schema';
+import { Form } from '@/components/atoms/forms';
+import isEmpty from 'lodash/isEmpty';
+import {  Flex } from '@/components/atoms/layout';
+import { Uploader } from '@/components/molecules/uploader/uploader';
 
 export const SwapDocs = ({
     user,
-    cart,
-    cartWithFiles
+    swapDocuments,
+    count
 } : {
     user: User,
-    cart: Cart | null;
-    cartWithFiles: CartWithFiles | null;
+    swapDocuments: CompleteSwap[];
+    count: number;
 }) => {
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-    const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
-    const [swapList, setSwapList] = useState<Array<{ swapFileName: string, cartFileId: string }>>([]);
+    const [onMarketplace, setOnMarketplace] = useState<boolean>(false);
+    const [reset, setReset] = useState({});
+    const [isUploading, setIsUploading] = useState(false);
+    const [allProgress, setAllProgress] = useState<{
+        [key: number]: {
+          progress: number;
+          file: string;
+          signal?: AbortController;
+        };
+      }>({});
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setUploadedFile(e.target.files[0]);
+
+    // Function to handle file upload
+    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("event.target.files")
+        const files = event.target.files;
+        console.log(files)
+        if (!files) return;
+        const file = files[0];
+        if (file) {
+            setUploadedFile(file);
         }
     };
 
-    const handleFileSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedFileId(e.target.value);
+    const handleProgress = (index: number, file: string) => {
+        return (progress: number, signal?: AbortController) => {
+          setAllProgress((prev) => ({
+            ...prev,
+            [index]: {
+              progress,
+              file,
+              signal,
+            },
+          }));
+        };
     };
 
-    const handleAddToList = () => {
-        if (uploadedFile && selectedFileId) {
-            setSwapList([...swapList, { swapFileName: uploadedFile.name, cartFileId: selectedFileId }]);
-            setUploadedFile(null);
-            setSelectedFileId('');
+    const onSubmit: SubmitHandler<UploadSwapInput> = async (
+        inputs: UploadSwapInput
+    )=> {
+        try {
+          if (isEmpty(inputs.file)) return;
+          setIsUploading(true);
+    
+          const uploadData = await uploadFilesAndGetPaths(
+            inputs.file,
+           'swap',
+            handleProgress,
+            ''
+          );
+          const uploadDataWithFormDetails = uploadData.map((fileData) => ({
+            ...fileData,                       // Spread the existing file data
+            address: inputs.address,                           // Add form field 'address'
+            tags: inputs.tags,                              // Add form field 'tags'
+            description: inputs.description,                       // Add form field 'description'
+            onMarketplace: inputs.onMarketplace,  // Add marketplace option
+            price: inputs.price,  // Add price if applicable
+          }));
+            console.log(uploadDataWithFormDetails)
+            await uploadSwapDocument(uploadDataWithFormDetails);
+            setIsUploading(false);
+            setReset({ file: [], address: '', tags: '', description: '', onMarketplace: false, price: '' });
+            toast.success(MESSAGES.FILES_UPLOAD_COMPLETED);
+        } catch (error) {
+          setIsUploading(false);
+          handleError(error);
         }
     };
 
+    // Function to add the uploaded document details to the swap list
+    // const handleAddToList = async () => {
+    //     try {
+    //         if (!uploadedFile || !address || !tags || !description || marketplaceOption === null || (marketplaceOption === 'yes' && !price)) {
+    //             return; // Ensure all fields are filled before submission
+    //         }
+
+    //         const uploadData = await uploadFilesAndGetPaths(
+    //           [uploadedFile],
+    //           'swap',
+    //           handleProgress,
+    //           ''
+    //         );
+    //         const uploadDataWithFormDetails = uploadData.map((fileData) => ({
+    //             ...fileData,                       // Spread the existing file data
+    //             address,                           // Add form field 'address'
+    //             tags,                              // Add form field 'tags'
+    //             description,                       // Add form field 'description'
+    //             marketplace: marketplaceOption === 'yes',  // Add marketplace option
+    //             price: marketplaceOption === 'yes' ? price : null,  // Add price if applicable
+    //           }));
+          
+    //         console.log(uploadDataWithFormDetails)
+    //         await uploadSwapDocument(uploadDataWithFormDetails);
+      
+    //         setIsUploading(false);
+    //         setUploadedFile(null); // Clear the uploaded file
+    //         setAddress(''); // Reset address
+    //         setTags(''); // Reset tags
+    //         setDescription(''); // Reset description
+    //         setMarketplaceOption(null); // Reset marketplace option
+    //         setPrice(''); // Reset price
+    //         setIsUploading(true);
+
+    //         toast.success(MESSAGES.FILES_UPLOAD_COMPLETED);
+    //       } catch (error) {
+    //         setIsUploading(false);
+    //         handleError(error);
+    //       }
+    // };
+
+    // Function to delete an item from the swap list
     const handleDelete = (index: number) => {
-        const updatedList = swapList.filter((_, i) => i !== index);
-        setSwapList(updatedList);
+        // const updatedList = swapList.filter((_, i) => i !== index);
+        // setSwapList(updatedList);
     };
-  
+
+    const [actionMenu, setActionMenu] = useState<number | null>(null); // State to manage the open action menu
+
+    // Function to toggle the action menu
+    const toggleActionMenu = (index: number) => {
+        console.log("toggle ",  index);
+        // Toggle the action menu for the specified index
+        setActionMenu(actionMenu === index ? null : index);
+    };
+
+    // Function to handle edit action
+    const handleEdit = (index: number) => {
+        // Implement the logic for editing an item in swapList
+        // This could involve opening a modal or redirecting to an edit page
+        console.log('Edit item at index:', index);
+    };
+
+    
     return (
-        <Flex direction="col" align="stretch" className="gap-0">
-            <Flex className="gap-6 mb-3 lg:mb-8 flex-col sm:flex-row" justify="start">
-                <PageHeader
-                title="Swap Documents"
-                description="Swap Documents with DocSwap"
-                descriptionClassName="hidden"
-                titleClassName="text-xl"
-                className="pb-0 mb-0 md:mb-0 border-b-0"
-                />
-            </Flex>
-             {/* Content Section with Two Columns */}
-             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* User Upload Section */}
-                <div className="bg-white dark:dark:bg-steel-700 dark:shadow-[0_3px_18px_rgba(0,0,0,0.1)] dark:border-steel-600/50 dark:border dark:text-white p-6 rounded-lg shadow-lg text-gray-800">
-                    <h3 className="text-lg font-semibold mb-4">Upload Your Document</h3>
-                    <label className="block w-full cursor-pointer">
-                        <div className="flex items-center justify-center w-full p-4 border-2 border-dashed border-gray-300 rounded-lg transition duration-200 hover:border-primary hover:bg-gray-50">
-                            <FolderOpen size={18} />
-                            <span className="ml-2 text-sm">Click to upload a document</span>
+        <div className="w-full max-w-7xl mx-auto px-4 lg:px-0">
+        {/* Full Width Form */}
+        <div className="bg-white dark:bg-steel-700 dark:shadow-[0_3px_18px_rgba(0,0,0,0.1)] dark:border-steel-600/50 dark:border dark:text-white p-6 rounded-lg shadow-lg text-gray-800 mb-6 w-full">
+            <h3 className="text-lg font-semibold mb-4">Upload Your Document</h3> 
+            <Form<UploadSwapInput>
+            validationSchema={UploadSwapSchema}
+            resetValues={reset}
+            onSubmit={onSubmit}
+            >
+                {({
+                register,
+                control,
+                setValue,
+                formState: { errors, defaultValues }, watch,
+                }) => (
+                    <Flex direction="col" align="stretch" className="gap-5">
+                    <Controller
+                    control={control}
+                    name="file"
+                    render={({ field: { value, onChange } } ) => {
+                        return (
+                            <Flex direction="col" align="stretch">
+                                <Uploader
+                                onChange={(file: File) => {
+                                    setAllProgress({});
+                                    setUploadedFile(file);
+                                    onChange(file);
+                                }}
+                                placeholder="Upload your file"
+                                defaultValue={defaultValues?.file}
+                                accept={acceptedMimeType()}
+                                isUploading={!isEmpty(allProgress)}
+                                />
+                                <Text className="text-red text-xs mt-0.5">
+                                {errors.file?.message as string}
+                                </Text>
+                            </Flex>
+                        )
+                    }}
+                    />
+                    <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div>
+                            <Input
+                                autoComplete="off"
+                                type="text"
+                                label="Address *"
+                                labelClassName="text-custom-black font-semibold mb-2 lg:mb-4"
+                                placeholder="Enter Address"
+                                {...register('address')}
+                                error={errors.address?.message}
+                                className="[&_.rizzui-input-container]:bg-white lg:[&_.rizzui-input-container]:rounded-xl [&_.rizzui-input-container]:focus:ring-gray-500 [&_.rizzui-input-container_input]:w-full lg:[&_.rizzui-input-container]:h-12 lg:[&_.rizzui-input-container]:px-7"
+                                inputClassName="[&.is-focus]:border-gray-500 [&.is-focus]:ring-2 ring-1 ring-[#CBD5E1] [&.is-focus]:ring-gray-500 [&.is-hover]:border-0 border-0 text-[#475569]"
+                            />
                         </div>
-                        <input
-                            type="file"
-                            onChange={handleFileUpload}
-                            className="hidden"
-                        />
-                    </label>
-                    
-                    {uploadedFile && (
-                        <p className="mt-4 text-sm text-green-600 bg-green-50 p-3 rounded-md">
-                            <strong>Uploaded:</strong> {uploadedFile.name}
-                        </p>
+
+                        <div>
+                            <Input
+                                autoComplete="off"
+                                type="text"
+                                label="Tags *"
+                                labelClassName="text-custom-black font-semibold mb-2 lg:mb-4"
+                                placeholder="Enter Tags (seperated by comma ',')"
+                                {...register('tags')}
+                                error={errors.tags?.message}
+                                className="[&_.rizzui-input-container]:bg-white lg:[&_.rizzui-input-container]:rounded-xl [&_.rizzui-input-container]:focus:ring-gray-500 [&_.rizzui-input-container_input]:w-full lg:[&_.rizzui-input-container]:h-12 lg:[&_.rizzui-input-container]:px-7"
+                                inputClassName="[&.is-focus]:border-gray-500 [&.is-focus]:ring-2 ring-1 ring-[#CBD5E1] [&.is-focus]:ring-gray-500 [&.is-hover]:border-0 border-0 text-[#475569]"
+                            />
+                        </div>
+                    </div>
+                    <Textarea
+                    autoComplete="off"
+                    label="Description *"
+                    labelClassName="text-custom-black font-semibold mb-2 lg:mb-4"
+                    placeholder="Enter a brief description of the document"
+                    {...register('description')}
+                    error={errors.description?.message}
+                    className="lg:[&_textarea]:rounded-xl lg:[&_textarea]:py-4 lg:[&_textarea]:px-7 [&_textarea]:text-[#475569] [&_textarea]:placeholder:text-[#475569]/70 [&_textarea]:border-0 [&_textarea.is-focus]:border-1 [&_textarea.is-focus]:ring-2 [&_textarea.is-focus]:ring-gray-500 [&_textarea]:ring-[#CBD5E1]"
+                    />
+                    <Controller
+                        control={control}
+                        name="onMarketplace"
+                        defaultValue={false}
+                        render={({ field: { value = false, onChange } }) => {
+                            return (
+                            <Flex>
+                               <Text className="text-custom-black font-semibold mb-2 lg:mb-4">
+                                    Put Document on Marketplace?
+                                </Text>
+                                <Switch checked={value} onChange={onChange} />
+                            </Flex>
+                            );
+                        }}
+                    />
+                    {watch('onMarketplace') && (
+                            <Input
+                                autoComplete="off"
+                                type="number"
+                                label="Price"
+                                labelClassName="text-custom-black font-semibold mb-2 lg:mb-4"
+                                placeholder="Enter price in CAD"
+                                {...register('price')}
+                                error={errors.price?.message}
+                                className="[&_.rizzui-input-container]:bg-white lg:[&_.rizzui-input-container]:rounded-xl [&_.rizzui-input-container]:focus:ring-gray-500 [&_.rizzui-input-container_input]:w-full lg:[&_.rizzui-input-container]:h-12 lg:[&_.rizzui-input-container]:px-7"
+                                inputClassName="[&.is-focus]:border-gray-500 [&.is-focus]:ring-2 ring-1 ring-[#CBD5E1] [&.is-focus]:ring-gray-500 [&.is-hover]:border-0 border-0 text-[#475569]"
+                            />
                     )}
-                </div>
-                {/* Cart Items Selection Section */}
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-800">Choose Items from Cart to Swap</h3>
-                    
-                    {cart && cart?.fileIds && cart.fileIds.length > 0 ? (
-                        <div className="mb-6">
-                            {/* <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Select a file from your cart
-                            </label> */}
-                            <select
-                                className="block w-full px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition duration-200"
-                                value={selectedFileId || ''}
-                                onChange={handleFileSelection}
-                            >
-                                <option value="">Select a file to swap</option>
-                                {cart.fileIds.map((item) => (
-                                    <option key={item} value={item}>
-                                        File ID: {item}
-                                    </option>
+                    <Button
+                    isLoading={isUploading}
+                    type="submit"
+                    size="lg"
+                    className="w-full"
+                  >
+                    Upload
+                  </Button>
+                  </Flex>
+                )}
+            </Form>
+        </div>
+
+        <div className="bg-white dark:bg-steel-700 dark:text-white p-6 rounded-lg shadow-lg w-full">
+            {swapDocuments.length > 0 ? (
+                <>
+                    <h3 className="text-lg font-bold mb-4">Submitted Files</h3>
+                        <table className="min-w-full table-auto">
+                            <thead className="bg-gray-100 dark:bg-steel-600">
+                                <tr>
+                                    <th className="px-4 py-2 text-left text-sm font-semibold">Swap File</th>
+                                    <th className="px-4 py-2 text-left text-sm font-semibold">Address</th>
+                                    <th className="px-4 py-2 text-left text-sm font-semibold">Tags</th>
+                                    <th className="px-4 py-2 text-left text-sm font-semibold">Description</th>
+                                    <th className="px-4 py-2 text-left text-sm font-semibold">Price</th>
+                                    <th className='px-4 py-2 text-left text-sm font-semibold'>Size</th>
+
+                                    <th className='px-4 py-2 text-left text-sm font-semibold'>Approved</th>
+                                    <th className="px-4 py-2 text-center text-sm font-semibold">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {swapDocuments.map((item, index) => (
+                                    <tr key={index} className="border-b">
+                                        <td className="px-4 py-2 text-sm">{item.name}</td>
+                                        <td className="px-4 py-2 text-sm">{item.address}</td>
+                                        <td className="px-4 py-2 text-sm">{item.tags}</td>
+                                        <td className="px-4 py-2 text-sm">{item.description}</td>
+                                        <td className="px-4 py-2 text-sm">
+
+                                            {item.onMarketplace ? `${item.price}` : 'N/A'}
+                                        </td>
+                                        <td className="px-4 py-2 text-sm">{prettyBytes(item.fileSize as number)}</td>
+                                        <td className="px-4 py-2 text-sm">{item.approved}</td>
+                                        <td className="px-4 py-2 text-center">
+                                        <div className="relative inline-block text-left">
+                                                <button
+                                                    className="text-gray-600 hover:text-gray-900 focus:outline-none"
+                                                    onClick={() => toggleActionMenu(index)}
+                                                >
+                                                    <FaEllipsisV className="w-5 h-5" />
+                                                </button>
+                                                {actionMenu === index && (
+                                                    <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-steel-700 border border-gray-200 dark:border-steel-600 rounded-md shadow-lg z-10">
+                                                        <button
+                                                            onClick={() => handleEdit(index)}
+                                                            className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-steel-600"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDelete(index)}
+                                                            className="block w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-steel-600"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
                                 ))}
-                            </select>
-                        </div>
-                    ) : (
-                        <p className="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg">
-                            Your cart is empty. Add items to your cart to swap documents.
-                        </p>
-                    )}
-                </div>
-            </div>
-
-            <div className="mt-6">
-                <button
-                    onClick={handleAddToList}
-                    disabled={!uploadedFile || !selectedFileId}
-                    className="px-6 py-3 bg-primary text-white font-semibold rounded-md hover:bg-primary-dark transition duration-300"
-                >
-                    Swap Document
-                </button>
-            </div>
-
-            {/* List View of Swap Files */}
-            {swapList.length > 0 && (
-                <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
-                    <h3 className="text-lg font-bold mb-4">Files to Swap</h3>
-                    <ul className="space-y-4">
-                        {swapList.map((item, index) => (
-                            <li
-                                key={index}
-                                className="flex justify-between items-center p-4 bg-gray-50 rounded-lg shadow-sm"
-                            >
-                                <div>
-                                    <p className="text-sm font-semibold">Swap File: {item.swapFileName}</p>
-                                    <p className="text-sm text-gray-600">Cart File ID: {item.cartFileId}</p>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <button
-                                        onClick={() => handleDelete(index)}
-                                        className="flex items-center px-3 py-1 text-sm text-red-600 hover:text-red-800 transition duration-200">
-                                            <TrashIcon size={20} strokeWidth={1.75} />
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                            </tbody>
+                        </table>
+                </>
+            ) : (
+                <p className="text-gray-600">No files submitted yet.</p>
             )}
+        </div>
+    </div>
 
-            <div className="mt-6">
-                <button
-                    onClick={handleAddToList}
-                    disabled={!uploadedFile || !selectedFileId}
-                    className="px-6 py-3 bg-primary text-white font-semibold rounded-md hover:bg-primary-dark transition duration-300"
-                >
-                    Submit For Approval
-                </button>
-            </div>
-
-        </Flex>
-    )
-}
+    );}

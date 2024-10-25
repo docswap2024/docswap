@@ -18,3 +18,4 @@ export * from './schema/roles';
 export * from './schema/user-roles';
 export * from './schema/ecommerce-parcels';
 export * from './schema/carts';
+export * from './schema/swap';

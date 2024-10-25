@@ -84,4 +84,9 @@ export const MESSAGES = {
   MAX_UPLOAD_LIMIT_EXCEED: 'Upload limit exceeded',
   SHARABLE_LINK_COPIED: 'Shareable Link Has Been Copied Successfully!',
   COMMENT_NOT_FOUND: 'No comment found !',
+  ADDRESS_IS_REQUIRED: 'Address is required',
+  ADDRESS_TOO_SHORT: 'Address is too short',
+  TAG_IS_REQUIRED: 'Tag is required',
+  DESCRIPTION_IS_REQUIRED: 'Description is required',
+  DESCRIPTION_TOO_SHORT: 'Description is too short',
 };

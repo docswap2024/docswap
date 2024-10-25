@@ -34,7 +34,7 @@ export function TeamGeneralSettingsForm({
     try {
       setIsLoading(true);
       if (Array.isArray(inputs.avatar)) {
-        const image = await uploadSingleFile(inputs.avatar[0]);
+        const image = await uploadSingleFile(inputs.avatar[0], 'file');
         inputs.avatar = image;
       }
       await updateTeam(team.id, inputs);

@@ -11,6 +11,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const fileType = searchParams.get('fileType');
   const fileName = searchParams.get('fileName');
+  const bucket = searchParams.get('bucketName')
 
   if (!fileType || !fileName) {
     return NextResponse.json(
@@ -23,7 +24,8 @@ export async function GET(request: Request) {
   const endpoint = env.CLOUDFLARE_ENDPOINT as string;
   const accessKeyId = env.CLOUDFLARE_ACCESS_KEY_ID as string;
   const secretAccessKey = env.CLOUDFLARE_SECRET_ACCESS_KEY as string;
-  const bucketName = env.R2_BUCKET_NAME as string;
+  const bucketName = bucket === 'file' ? env.R2_BUCKET_NAME as string : env.R2_SWAP_BUCKET_NAME
+  // const bucketName = env.R2_BUCKET_NAME as string;
 
   const s3Bucket = new S3Client({
     region: 'auto',

@@ -7,6 +7,8 @@
 - Added favourites and add to cart functionality
 - Added Sorting By Street Address, City, Postal Code
 - Added List View with more details and actions (Add to Cart, Favourite)
+- Added Floated Cart and Cart Drawer
+- Added Swap Documents Functionality
 
 ## [0.1.1] - 2024-09-25
 

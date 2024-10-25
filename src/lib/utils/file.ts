@@ -38,6 +38,7 @@ export function getR2FileLink(fileName: string) {
 }
 export async function uploadFilesAndGetPaths(
   files: File[],
+  bucket: string,
   handleProgress: (
     index: number,
     file: string
@@ -47,34 +48,50 @@ export async function uploadFilesAndGetPaths(
   const paths = await Promise.all(
     files.map((file, index) => {
       const progressHandler = handleProgress(index, file.name);
-      return uploadSingleFile(file, progressHandler);
+      return uploadSingleFile(file, bucket, progressHandler);
     })
   );
 
-  return prepareFile({ file: files }, paths, parentId);
+  return prepareFile({ file: files }, paths, parentId, bucket);
 }
 
 export function prepareFile(
   inputs: UploadFileInput,
   paths: string[],
-  parentId: string
+  parentId: string,
+  bucket:  string
 ) {
   return inputs.file.map((f: UploadFileInput['file'], i: number) => {
     if (typeof paths[i] !== 'undefined') {
       let regex = new RegExp(/\.[^/.]+$/);
       const mimeArray = f.type.split('/');
       const changeType = ['application', 'text'];
-      return {
-        name: f.name.replace(regex, ''),
-        fileName: paths[i],
-        mime: f.type,
-        type: changeType.includes(mimeArray[0])
-          ? mime.getExtension(f.type)
-          : mimeArray[0],
-        extension: mime.getExtension(f.type),
-        fileSize: f.size,
-        parentId,
-      };
+
+      if (bucket === 'file') {
+        return {
+          name: f.name.replace(regex, ''),
+          fileName: paths[i],
+          mime: f.type,
+          type: changeType.includes(mimeArray[0])
+            ? mime.getExtension(f.type)
+            : mimeArray[0],
+          extension: mime.getExtension(f.type),
+          fileSize: f.size,
+          parentId,
+        };
+      } {
+        return {
+          name: f.name.replace(regex, ''),
+          fileName: paths[i],
+          mime: f.type,
+          type: changeType.includes(mimeArray[0])
+            ? mime.getExtension(f.type)
+            : mimeArray[0],
+          extension: mime.getExtension(f.type),
+          fileSize: f.size
+        };
+      }
+      
     }
   });
 }

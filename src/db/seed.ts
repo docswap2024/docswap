@@ -21,10 +21,10 @@ const main = async () => {
 
   try {
     console.log('🚀 Inserting permissions\n');
-    // await permissionSeeder(db);
-    // await insertUserAndAssignRole(db);
-    // await settingsSeeder(db);
-    await addParcelSeeder(db);
+    await permissionSeeder(db);
+    await insertUserAndAssignRole(db);
+    await settingsSeeder(db);
+    // await addParcelSeeder(db);
   } catch (error) {
     console.log(error);
     console.log('❌ Seeding Failed');  

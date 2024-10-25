@@ -29,6 +29,7 @@ export const env = createEnv({
     CLOUDFLARE_ACCESS_KEY_ID: z.string().min(1),
     CLOUDFLARE_SECRET_ACCESS_KEY: z.string().min(1),
     R2_BUCKET_NAME: z.string().min(1),
+    R2_SWAP_BUCKET_NAME: z.string().min(1),
 
     MAILCHIMP_API_KEY:z.string().min(1),
     MAILCHIMP_AUDIENCE_ID:z.string().min(1),
@@ -90,6 +91,7 @@ export const env = createEnv({
     CLOUDFLARE_ACCESS_KEY_ID: process.env.CLOUDFLARE_ACCESS_KEY_ID,
     CLOUDFLARE_SECRET_ACCESS_KEY: process.env.CLOUDFLARE_SECRET_ACCESS_KEY,
     R2_BUCKET_NAME: process.env.R2_BUCKET_NAME,
+    R2_SWAP_BUCKET_NAME: process.env.R2_SWAP_BUCKET_NAME,
 
     NEXT_PUBLIC_SHOP_URL: process.env.NEXT_PUBLIC_SHOP_URL,
 

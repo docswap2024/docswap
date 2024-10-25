@@ -4,14 +4,13 @@ import { getParcelById } from '@/server/actions/parcels.action';
 import { getCart} from '@/server/actions/cart.action';
 import { getCurrentUser } from '@/lib/utils/session';
 import { getCartWithFileDetails } from "@/lib/utils/cart";
+import { getSwapDocuments } from "@/server/actions/swap.action";
 
 export default async function Page() {
     const user = await getCurrentUser();
-    let cart = await getCart(user?.id);
-
-    const cartWithFiles = await getCartWithFileDetails(user?.id);
+    const { swapDocuments, count } = await getSwapDocuments();
 
     return (
-        <SwapDocs user={user} cart={cart || null} cartWithFiles={cartWithFiles} />
+        <SwapDocs user={user} swapDocuments={swapDocuments} count={count} />
     )
 }

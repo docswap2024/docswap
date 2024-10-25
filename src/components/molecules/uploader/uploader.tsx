@@ -28,7 +28,9 @@ function DisplayPreview({
   variant?: VariantTypes;
 }) {
   const iconType = getFileType(file!) as FileIconType;
-
+  useEffect(() => {
+    console.log("in display")
+  }, []);
   return (
     <div className="uploader-preview-card relative items-center w-full gap-4 overflow-hidden grid grid-cols-[1fr_36px]">
       <div className="z-[1] flex items-center w-full gap-6">
@@ -184,6 +186,10 @@ export const Uploader = forwardRef<Ref, Props>(
     ));
 
     useEffect(() => {
+      console.log(files);
+      console.log(variant);
+      console.log(multiple);
+      console.log(isUploading);
       return () => files?.forEach((file) => URL.revokeObjectURL(file?.preview));
     }, [files]);
 

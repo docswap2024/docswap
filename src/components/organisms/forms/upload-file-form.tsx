@@ -7,7 +7,7 @@ import { CheckIcon, XIcon } from 'lucide-react';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import { ActionIcon, Button, Progressbar, Text } from 'rizzui';
 import { toast } from 'sonner';
-
+import { env } from '@/env.mjs';
 import { MESSAGES } from '@/config/messages';
 import { useDrawer } from '@/lib/store/drawer.store';
 import { handleError } from '@/lib/utils/error';
@@ -63,6 +63,7 @@ export const UploadFileForm = () => {
 
       const uploadData = await uploadFilesAndGetPaths(
         inputs.file,
+        'file',
         handleProgress,
         parentId
       );

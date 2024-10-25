@@ -6,3 +6,4 @@ export * from './settings.service';
 export * from './files.service';
 export * from './folders.service';
 export * from './analytics.service';
+export * from './swap.service';

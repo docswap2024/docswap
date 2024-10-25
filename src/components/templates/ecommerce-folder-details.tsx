@@ -260,28 +260,19 @@ export function EcommerceFolderDetails({
             }
 
             <div className="mt-8 px-6 py-4 bg-gray-100 rounded-lg shadow-md text-center">
-                {isCartEmpty ? (
                     <div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-3">Your Cart is Empty</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                        To swap documents, please add the desired items to your cart.
-                    </p>
-                    </div>
-                ) : (
-                    <div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-3">Swap Documents with DocSwap</h3>
+                        <h3 className="text-xl font-bold text-gray-800 mb-3">Swap Documents</h3>
                         <p className="text-sm text-gray-600 mb-4">
-                            Want to exchange this document for one of your own? Use DocSwap to easily swap files in seconds. No additional fees required for swapping.
+                        Exchange this file with a similar one. Free on DocSwap
                         </p>
 
                         <Link
                             href={routes.DASHBOARD.SWAP_DOCS}
                             className="inline-flex items-center justify-center bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-md transition duration-300"
                         >
-                            Swap Documents Now
+                            Upload Now
                         </Link>
                     </div>
-                )}
             </div>
             {
             propertyInfo &&
