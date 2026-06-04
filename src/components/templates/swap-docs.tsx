@@ -6,7 +6,7 @@ import {
 import { User } from 'lucia';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import { useState } from 'react';
-import {  Text, Button, Input, Textarea, Switch } from 'rizzui';
+import {  Text, Button, Input, Textarea, Switch, Popover, Title } from 'rizzui';
 import { FaEllipsisV } from "react-icons/fa";
 import { acceptedMimeType, uploadFilesAndGetPaths } from '@/lib/utils/file';
 import { toast } from 'sonner';
@@ -22,6 +22,8 @@ import { Form } from '@/components/atoms/forms';
 import isEmpty from 'lodash/isEmpty';
 import {  Flex } from '@/components/atoms/layout';
 import { Uploader } from '@/components/molecules/uploader/uploader';
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
+import { deleteSwapDocument } from '@/server/actions/swap.action';
 
 export const SwapDocs = ({
     user,
@@ -33,7 +35,6 @@ export const SwapDocs = ({
     count: number;
 }) => {
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-    const [onMarketplace, setOnMarketplace] = useState<boolean>(false);
     const [reset, setReset] = useState({});
     const [isUploading, setIsUploading] = useState(false);
     const [allProgress, setAllProgress] = useState<{
@@ -43,19 +44,6 @@ export const SwapDocs = ({
           signal?: AbortController;
         };
       }>({});
-
-
-    // Function to handle file upload
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("event.target.files")
-        const files = event.target.files;
-        console.log(files)
-        if (!files) return;
-        const file = files[0];
-        if (file) {
-            setUploadedFile(file);
-        }
-    };
 
     const handleProgress = (index: number, file: string) => {
         return (progress: number, signal?: AbortController) => {
@@ -100,53 +88,6 @@ export const SwapDocs = ({
           setIsUploading(false);
           handleError(error);
         }
-    };
-
-    // Function to add the uploaded document details to the swap list
-    // const handleAddToList = async () => {
-    //     try {
-    //         if (!uploadedFile || !address || !tags || !description || marketplaceOption === null || (marketplaceOption === 'yes' && !price)) {
-    //             return; // Ensure all fields are filled before submission
-    //         }
-
-    //         const uploadData = await uploadFilesAndGetPaths(
-    //           [uploadedFile],
-    //           'swap',
-    //           handleProgress,
-    //           ''
-    //         );
-    //         const uploadDataWithFormDetails = uploadData.map((fileData) => ({
-    //             ...fileData,                       // Spread the existing file data
-    //             address,                           // Add form field 'address'
-    //             tags,                              // Add form field 'tags'
-    //             description,                       // Add form field 'description'
-    //             marketplace: marketplaceOption === 'yes',  // Add marketplace option
-    //             price: marketplaceOption === 'yes' ? price : null,  // Add price if applicable
-    //           }));
-          
-    //         console.log(uploadDataWithFormDetails)
-    //         await uploadSwapDocument(uploadDataWithFormDetails);
-      
-    //         setIsUploading(false);
-    //         setUploadedFile(null); // Clear the uploaded file
-    //         setAddress(''); // Reset address
-    //         setTags(''); // Reset tags
-    //         setDescription(''); // Reset description
-    //         setMarketplaceOption(null); // Reset marketplace option
-    //         setPrice(''); // Reset price
-    //         setIsUploading(true);
-
-    //         toast.success(MESSAGES.FILES_UPLOAD_COMPLETED);
-    //       } catch (error) {
-    //         setIsUploading(false);
-    //         handleError(error);
-    //       }
-    // };
-
-    // Function to delete an item from the swap list
-    const handleDelete = (index: number) => {
-        // const updatedList = swapList.filter((_, i) => i !== index);
-        // setSwapList(updatedList);
     };
 
     const [actionMenu, setActionMenu] = useState<number | null>(null); // State to manage the open action menu
@@ -329,19 +270,52 @@ export const SwapDocs = ({
                                                     <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-steel-700 border border-gray-200 dark:border-steel-600 rounded-md shadow-lg z-10">
                                                         <button
                                                             onClick={() => handleEdit(index)}
-                                                            className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-steel-600"
+                                                            className="block w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-steel-600 flex items-center justify-center"
                                                         >
+                                                            <PencilSquareIcon className="w-5 h-auto mr-2" />
                                                             Edit
                                                         </button>
-                                                        <button
-                                                            onClick={() => handleDelete(index)}
+                                                        {/* <button
+                                                            onClick={() => handleDeleteClick(index)}
                                                             className="block w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-steel-600"
                                                         >
                                                             Delete
-                                                        </button>
+                                                        </button> */}
+                                                        <Popover>
+                                                            <Popover.Trigger>
+                                                                {/* <Button variant="outline" color="danger">
+                                                                <TrashIcon className="w-5 h-auto" />
+                                                                </Button> */}
+                                                                <button className="block w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-steel-600 flex items-center justify-center">
+                                                                <TrashIcon className="w-5 h-auto mr-2" />
+                                                                Delete
+                                                                </button>
+                                                            </Popover.Trigger>
+                                                            <Popover.Content>
+                                                                {({ setOpen }) => (
+                                                                <div className="w-56">
+                                                                    <Title as="h6">Delete the submission</Title>
+                                                                    <Text>Are you sure you want to delete this file?</Text>
+                                                                    <div className="flex justify-end gap-3 mb-1">
+                                                                    <Button size="sm" variant="outline" onClick={() => setOpen(false)}>
+                                                                        No
+                                                                    </Button>
+                                                                    <Button size="sm" onClick={() => {
+                                                                        setOpen(false);
+                                                                        deleteSwapDocument(item.id as string);
+                                                                        setActionMenu(null);
+
+                                                                    }}>
+                                                                        Yes
+                                                                    </Button>
+                                                                    </div>
+                                                                </div>
+                                                                )}
+                                                            </Popover.Content>
+                                                        </Popover>
                                                     </div>
                                                 )}
-                                            </div>
+                                        </div>
                                         </td>
                                     </tr>
                                 ))}

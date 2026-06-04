@@ -52,5 +52,8 @@ export const SwapService = {
           swapDocuments,
           count,
         };
-      },
+    },
+    deleteSwapDocument: async (id: string) => {
+        return await db.delete(swapModel).where(eq(swapModel.id, id)).returning();
+    }
 }

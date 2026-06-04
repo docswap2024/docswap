@@ -35,4 +35,11 @@ export async function getSwapDocuments() {
     const files = await SwapService.getSwapDocuments(filesOptions);
     revalidateTag('get-swap');
     return files;
-  }
+}
+
+export async function deleteSwapDocument(id: string) {
+    const deletedFile = await SwapService.deleteSwapDocument(id);
+    revalidateTag('get-swap');
+    revalidateTag('get-all-swap');
+    return deletedFile;
+}
